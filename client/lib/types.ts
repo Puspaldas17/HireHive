@@ -65,6 +65,9 @@ export interface AnalyticsStats {
     month: string;
     count: number;
   }>;
+  thisMonth?: number;
+  successRate?: number;
+  avgDaysToInterview?: number;
 }
 
 export interface AuthContextType {
