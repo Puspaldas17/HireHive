@@ -57,6 +57,13 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        status: {
+          applied: "hsl(var(--status-applied))",
+          interview: "hsl(var(--status-interview))",
+          offer: "hsl(var(--status-offer))",
+          rejected: "hsl(var(--status-rejected))",
+          onhold: "hsl(var(--status-onhold))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
