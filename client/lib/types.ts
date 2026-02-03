@@ -10,6 +10,26 @@ export interface User {
   createdAt?: Date; // NEW
 }
 
+export interface StatusHistoryEntry {
+  status: JobStatus;
+  changedAt: Date;
+}
+
+export interface Note {
+  id: string;
+  content: string;
+  type: 'general' | 'interview' | 'followup';
+  createdAt: Date;
+}
+
+export interface Activity {
+  id: string;
+  type: 'status_change' | 'note_added' | 'interview_scheduled' | 'application_created';
+  timestamp: Date;
+  description: string;
+  metadata?: Record<string, any>;
+}
+
 export interface JobApplication {
   id: string;
   userId: string;
@@ -23,6 +43,10 @@ export interface JobApplication {
   jobUrl?: string;
   resumeId?: string;
   interviewDate?: Date;
+  // NEW FIELDS
+  statusHistory?: StatusHistoryEntry[];
+  notesList?: Note[];
+  activities?: Activity[];
 }
 
 export interface Resume {
