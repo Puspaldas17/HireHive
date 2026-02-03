@@ -267,9 +267,37 @@ export async function getAnalytics(userId: string): Promise<AnalyticsStats> {
     monthlyTrends.push({ month, count });
   }
 
+  // Calculate this month's applications
+  const thisMonth = apps.filter((app) => {
+    const appMonth = app.applicationDate;
+    return (
+      appMonth.getMonth() === now.getMonth() &&
+      appMonth.getFullYear() === now.getFullYear()
+    );
+  }).length;
+
+  // Calculate success rate (offers/total)
+  const successRate = apps.length > 0 ? Math.round((byStatus.Offer / apps.length) * 100) : 0;
+
+  // Calculate average days to first interview
+  const appsWithInterviews = apps.filter((a) => a.interviewDate);
+  const avgDaysToInterview = appsWithInterviews.length > 0
+    ? Math.round(
+        appsWithInterviews.reduce((sum, app) => {
+          const daysToInterview = Math.floor(
+            (app.interviewDate!.getTime() - app.applicationDate.getTime()) / (1000 * 60 * 60 * 24)
+          );
+          return sum + daysToInterview;
+        }, 0) / appsWithInterviews.length
+      )
+    : 0;
+
   return {
     totalApplications: apps.length,
     byStatus,
     monthlyTrends,
+    thisMonth,
+    successRate,
+    avgDaysToInterview,
   };
 }
