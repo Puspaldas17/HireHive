@@ -54,15 +54,27 @@ export async function createJobApplication(
   const stored = localStorage.getItem(APPLICATIONS_STORAGE_KEY);
   const applications = stored ? JSON.parse(stored) : mockJobApplications;
 
+  const now = new Date();
   const newApplication: JobApplication = {
     ...data,
     id: `app-${Date.now()}`,
     userId,
     applicationDate: new Date(data.applicationDate),
-    lastUpdated: new Date(data.lastUpdated),
+    lastUpdated: now,
     interviewDate: data.interviewDate
       ? new Date(data.interviewDate)
       : undefined,
+    // Initialize new fields
+    statusHistory: [{ status: data.status, changedAt: now }],
+    notesList: [],
+    activities: [
+      {
+        id: `act-${Date.now()}`,
+        type: 'application_created',
+        timestamp: now,
+        description: 'Application submitted',
+      },
+    ],
   };
 
   applications.push(newApplication);
