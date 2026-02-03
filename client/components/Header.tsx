@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { Button } from "./ui/button";
+import { Suspense } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
