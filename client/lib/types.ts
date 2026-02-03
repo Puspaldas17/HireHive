@@ -5,6 +5,9 @@ export interface User {
   email: string;
   name: string;
   password: string; // In production, this would never be in the client
+  role?: 'user' | 'admin'; // NEW
+  theme?: 'light' | 'dark'; // NEW
+  createdAt?: Date; // NEW
 }
 
 export interface JobApplication {
