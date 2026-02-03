@@ -28,6 +28,20 @@ export const mockJobApplications: JobApplication[] = [
     salary: "$180,000 - $220,000",
     jobUrl: "https://google.com/careers/job/123",
     interviewDate: new Date("2025-01-20"),
+    statusHistory: [
+      { status: "Applied", changedAt: new Date("2024-12-15") },
+      { status: "Interview", changedAt: new Date("2024-12-28") },
+    ],
+    notesList: [
+      { id: "note-1", content: "First round interview went well, liked the team", type: "interview", createdAt: new Date("2024-12-28") },
+      { id: "note-2", content: "Second round interview scheduled for Jan 20", type: "interview", createdAt: new Date("2025-01-10") },
+    ],
+    activities: [
+      { id: "act-1", type: "application_created", timestamp: new Date("2024-12-15"), description: "Application submitted" },
+      { id: "act-2", type: "status_change", timestamp: new Date("2024-12-28"), description: "Status changed to Interview", metadata: { from: "Applied", to: "Interview" } },
+      { id: "act-3", type: "note_added", timestamp: new Date("2024-12-28"), description: "Interview note added" },
+      { id: "act-4", type: "interview_scheduled", timestamp: new Date("2025-01-10"), description: "Interview scheduled for 2025-01-20" },
+    ],
   },
   {
     id: "app-2",
