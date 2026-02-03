@@ -99,14 +99,40 @@ export async function updateJobApplication(
 
   if (index === -1) return null;
 
+  const oldApplication = applications[index];
+  const now = new Date();
+
+  // Handle status change tracking
+  let statusHistory = oldApplication.statusHistory || [{ status: oldApplication.status, changedAt: oldApplication.applicationDate }];
+  let activities = oldApplication.activities || [];
+
+  if (data.status && data.status !== oldApplication.status) {
+    statusHistory = [
+      ...statusHistory,
+      { status: data.status, changedAt: now },
+    ];
+    activities = [
+      ...activities,
+      {
+        id: `act-${Date.now()}`,
+        type: 'status_change' as const,
+        timestamp: now,
+        description: `Status changed to ${data.status}`,
+        metadata: { from: oldApplication.status, to: data.status },
+      },
+    ];
+  }
+
   const updated = {
-    ...applications[index],
+    ...oldApplication,
     ...data,
     id: applicationId, // Ensure ID doesn't change
     userId, // Ensure userId doesn't change
-    lastUpdated: new Date(),
-    applicationDate: new Date(data.applicationDate || applications[index].applicationDate),
-    interviewDate: data.interviewDate ? new Date(data.interviewDate) : applications[index].interviewDate,
+    lastUpdated: now,
+    applicationDate: new Date(data.applicationDate || oldApplication.applicationDate),
+    interviewDate: data.interviewDate ? new Date(data.interviewDate) : oldApplication.interviewDate,
+    statusHistory,
+    activities,
   };
 
   applications[index] = updated;
