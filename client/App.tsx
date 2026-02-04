@@ -56,7 +56,7 @@ export const App = () => (
               }
             />
             <Route
-              path="/applications/:id"
+              path="/application/:id"
               element={
                 <ProtectedRoute>
                   <ApplicationDetails />
@@ -64,7 +64,7 @@ export const App = () => (
               }
             />
             <Route
-              path="/applications/:id/edit"
+              path="/edit-application/:id"
               element={
                 <ProtectedRoute>
                   <EditApplication />
