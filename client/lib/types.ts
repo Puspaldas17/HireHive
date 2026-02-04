@@ -1,52 +1,36 @@
-export type JobStatus = "Applied" | "Interview" | "Offer" | "Rejected" | "OnHold";
-
 export interface User {
   id: string;
   email: string;
   name: string;
-  password: string; // In production, this would never be in the client
-  role?: 'user' | 'admin'; // NEW
-  theme?: 'light' | 'dark'; // NEW
-  createdAt?: Date; // NEW
+  password?: string;
+  role?: "user" | "recruiter" | "admin";
+  companyName?: string; // Optional for recruiters on signup
 }
 
-export interface StatusHistoryEntry {
-  status: JobStatus;
-  changedAt: Date;
-}
-
-export interface Note {
+export interface Company {
   id: string;
-  content: string;
-  type: 'general' | 'interview' | 'followup';
-  createdAt: Date;
-}
-
-export interface Activity {
-  id: string;
-  type: 'status_change' | 'note_added' | 'interview_scheduled' | 'application_created';
-  timestamp: Date;
-  description: string;
-  metadata?: Record<string, any>;
-}
-
-export interface JobApplication {
-  id: string;
+  name: string;
+  description?: string;
+  logoUrl?: string;
+  website?: string;
+  location?: string;
   userId: string;
-  company: string;
-  jobRole: string;
-  status: JobStatus;
-  applicationDate: Date;
-  lastUpdated: Date;
-  notes: string;
+}
+
+export interface JobPost {
+  id: string;
+  title: string;
+  description: string;
+  skills: string;
   salary?: string;
-  jobUrl?: string;
-  resumeId?: string;
-  interviewDate?: Date;
-  // NEW FIELDS
-  statusHistory?: StatusHistoryEntry[];
-  notesList?: Note[];
-  activities?: Activity[];
+  type: string;
+  location?: string;
+  remote: boolean;
+  status: "OPEN" | "CLOSED";
+  postedAt: Date;
+  updatedAt: Date;
+  companyId: string;
+  company?: Company;
 }
 
 export interface Resume {
@@ -55,25 +39,66 @@ export interface Resume {
   fileName: string;
   fileSize: number;
   uploadedAt: Date;
-  fileData?: string; // Base64 encoded file data for storage
+  fileData?: string; // Optional if we don't always load full blob
 }
+
+export interface JobApplication {
+  id: string;
+  userId: string;
+  company: string; // Legacy string for external apps
+  jobRole: string;
+  status: JobStatus;
+  applicationDate: Date;
+  lastUpdated: Date;
+  notes?: string;
+  salary?: string;
+  jobUrl?: string;
+  interviewDate?: Date;
+  statusHistory?: StatusHistory[];
+  notesList?: Note[];
+  activities?: Activity[];
+}
+
+export interface StatusHistory {
+  status: string;
+  changedAt: Date;
+}
+
+export interface Note {
+  id: string;
+  content: string;
+  type: "general" | "interview" | "followup";
+  createdAt: Date;
+}
+
+export interface Activity {
+  id: string;
+  type: string;
+  timestamp: Date;
+  description: string;
+  metadata?: any;
+}
+
+export type JobStatus =
+  | "Applied"
+  | "Interview"
+  | "Offer"
+  | "Rejected"
+  | "OnHold";
 
 export interface AnalyticsStats {
   totalApplications: number;
-  byStatus: Record<JobStatus, number>;
-  monthlyTrends: Array<{
-    month: string;
-    count: number;
-  }>;
-  thisMonth?: number;
-  successRate?: number;
-  avgDaysToInterview?: number;
+  byStatus: Record<string, number>;
+  monthlyTrends: { month: string; count: number }[];
+  thisMonth: number;
+  successRate: number;
+  avgDaysToInterview: number;
 }
 
 export interface AuthContextType {
   user: User | null;
   login: (email: string, password: string) => Promise<void>;
-  signup: (email: string, name: string, password: string) => Promise<void>;
+  signup: (email: string, name: string, password: string, role?: "user" | "recruiter", companyName?: string) => Promise<void>;
   logout: () => void;
   isLoading: boolean;
 }

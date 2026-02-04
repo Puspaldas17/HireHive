@@ -35,24 +35,43 @@ export function Header() {
         <nav className="hidden gap-6 md:flex">
           {user && (
             <>
-              <Link
-                to="/dashboard"
-                className="text-foreground hover:text-primary transition"
-              >
-                Dashboard
-              </Link>
-              <Link
-                to="/analytics"
-                className="text-foreground hover:text-primary transition"
-              >
-                Analytics
-              </Link>
-              <Link
-                to="/resume"
-                className="text-foreground hover:text-primary transition"
-              >
-                Resume
-              </Link>
+              {user.role === "recruiter" ? (
+                <>
+                  <Link
+                    to="/recruiter/dashboard"
+                    className="text-foreground hover:text-primary transition"
+                  >
+                    Dashboard
+                  </Link>
+                  <Link
+                    to="/recruiter/jobs/new"
+                    className="text-foreground hover:text-primary transition"
+                  >
+                    Post Job
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link
+                    to="/dashboard"
+                    className="text-foreground hover:text-primary transition"
+                  >
+                    Dashboard
+                  </Link>
+                  <Link
+                    to="/analytics"
+                    className="text-foreground hover:text-primary transition"
+                  >
+                    Analytics
+                  </Link>
+                  <Link
+                    to="/resume"
+                    className="text-foreground hover:text-primary transition"
+                  >
+                    Resume
+                  </Link>
+                </>
+              )}
             </>
           )}
         </nav>
