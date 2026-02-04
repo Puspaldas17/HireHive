@@ -17,9 +17,9 @@ import {
 } from "../components/ui/select";
 import { ArrowLeft, AlertCircle, Loader } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
-import { getJobApplication, updateJobApplication } from "../lib/api";
+import { getJobApplication, updateJobApplication, getResumes } from "../lib/api";
 import { useToast } from "../hooks/use-toast";
-import { JobStatus, JobApplication } from "../lib/types";
+import { JobStatus, JobApplication, Resume } from "../lib/types";
 
 const jobStatusOptions: JobStatus[] = ["Applied", "Interview", "Offer", "Rejected", "OnHold"];
 
