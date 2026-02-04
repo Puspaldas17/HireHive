@@ -96,6 +96,24 @@ export const App = () => (
               }
             />
 
+            {/* Admin Routes */}
+            <Route
+              path="/admin"
+              element={
+                <ProtectedRoute>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/users"
+              element={
+                <ProtectedRoute>
+                  <AdminUsers />
+                </ProtectedRoute>
+              }
+            />
+
             {/* 404 Catch-all */}
             <Route path="*" element={<NotFound />} />
           </Routes>
