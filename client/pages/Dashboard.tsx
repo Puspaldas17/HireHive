@@ -1,8 +1,7 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Layout } from "../components/Layout";
 import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
 import { StatusBadge } from "../components/StatusBadge";
 import {
   Select,
@@ -26,20 +25,39 @@ import {
   DropdownMenuTrigger,
 } from "../components/ui/dropdown-menu";
 import { useAuth } from "../hooks/useAuth";
-import { mockJobApplications } from "../lib/mockData";
-import { JobStatus } from "../lib/types";
+import { getJobApplications } from "../lib/api";
+import { JobApplication, JobStatus } from "../lib/types";
 import { MoreHorizontal, Plus, Trash2, Edit2, Eye } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import { GlobalSearch } from "../components/GlobalSearch";
+import { AdvancedFilters, FilterOptions } from "../components/AdvancedFilters";
 
 type SortBy = "date-desc" | "date-asc" | "updated-desc" | "updated-asc";
 
 export default function Dashboard() {
   const { user } = useAuth();
+  const [applications, setApplications] = useState<JobApplication[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState<JobStatus | "all">("all");
+  const [filters, setFilters] = useState<FilterOptions>({});
   const [sortBy, setSortBy] = useState<SortBy>("date-desc");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+
+  // Load applications
+  useEffect(() => {
+    const loadApplications = async () => {
+      if (!user) return;
+      try {
+        const apps = await getJobApplications(user.id);
+        setApplications(apps);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadApplications();
+  }, [user]);
 
   if (!user) {
     return (
@@ -51,12 +69,9 @@ export default function Dashboard() {
     );
   }
 
-  // Get user's applications
-  const userApps = mockJobApplications.filter((app) => app.userId === user.id);
-
   // Filter applications
   const filtered = useMemo(() => {
-    let result = userApps;
+    let result = applications;
 
     // Search filter
     if (searchTerm) {
@@ -69,13 +84,61 @@ export default function Dashboard() {
       );
     }
 
-    // Status filter
-    if (statusFilter !== "all") {
-      result = result.filter((app) => app.status === statusFilter);
+    // Advanced filters
+    if (filters.status) {
+      result = result.filter((app) => app.status === filters.status);
+    }
+
+    if (filters.company) {
+      result = result.filter((app) =>
+        app.company.toLowerCase().includes(filters.company!.toLowerCase())
+      );
+    }
+
+    if (filters.jobRole) {
+      result = result.filter((app) =>
+        app.jobRole.toLowerCase().includes(filters.jobRole!.toLowerCase())
+      );
+    }
+
+    if (filters.startDate) {
+      result = result.filter(
+        (app) => new Date(app.applicationDate) >= new Date(filters.startDate!)
+      );
+    }
+
+    if (filters.endDate) {
+      result = result.filter(
+        (app) => new Date(app.applicationDate) <= new Date(filters.endDate!)
+      );
+    }
+
+    if (filters.hasInterview) {
+      result = result.filter((app) => app.interviewDate !== undefined);
+    }
+
+    if (filters.hasResume) {
+      result = result.filter((app) => app.resumeId !== undefined);
+    }
+
+    if (filters.hasNotes) {
+      result = result.filter((app) => (app.notesList?.length || 0) > 0);
+    }
+
+    // Salary range filtering (basic parsing)
+    if (filters.minSalary || filters.maxSalary) {
+      result = result.filter((app) => {
+        if (!app.salary) return false;
+        // This is a simple check - in production you'd want to parse salary properly
+        const salaryNum = parseInt(app.salary.replace(/[^0-9]/g, ""));
+        const minSalary = filters.minSalary ? parseInt(filters.minSalary) : 0;
+        const maxSalary = filters.maxSalary ? parseInt(filters.maxSalary) : Infinity;
+        return salaryNum >= minSalary && salaryNum <= maxSalary;
+      });
     }
 
     return result;
-  }, [userApps, searchTerm, statusFilter]);
+  }, [applications, searchTerm, filters]);
 
   // Sort applications
   const sorted = useMemo(() => {
@@ -138,44 +201,27 @@ export default function Dashboard() {
       </div>
 
       {/* Filters and Search */}
-      <div className="mb-6 grid gap-4 sm:grid-cols-3">
-        <Input
-          placeholder="Search by company, role, or notes..."
-          value={searchTerm}
-          onChange={(e) => {
-            setSearchTerm(e.target.value);
+      <div className="mb-6 space-y-4">
+        <GlobalSearch applications={applications} />
+        <AdvancedFilters
+          filters={filters}
+          onFiltersChange={(newFilters) => {
+            setFilters(newFilters);
             setCurrentPage(1);
           }}
-          className="sm:col-span-2"
+          onClear={() => {
+            setFilters({});
+            setCurrentPage(1);
+          }}
         />
-
-        <Select
-          value={statusFilter}
-          onValueChange={(value) => {
-            setStatusFilter(value as JobStatus | "all");
-            setCurrentPage(1);
-          }}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Filter by status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Statuses</SelectItem>
-            {statusOptions.map((status) => (
-              <SelectItem key={status} value={status}>
-                {status === "OnHold" ? "On Hold" : status}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
       </div>
 
       {/* Sort Options */}
       <div className="mb-6 flex justify-between items-center">
         <p className="text-sm text-muted-foreground">
-          Showing {Math.min(startIndex + 1, sorted.length)} to{" "}
-          {Math.min(startIndex + itemsPerPage, sorted.length)} of {sorted.length}{" "}
-          applications
+          Showing {isLoading ? "..." : Math.min(startIndex + 1, sorted.length)} to{" "}
+          {isLoading ? "..." : Math.min(startIndex + itemsPerPage, sorted.length)} of{" "}
+          {isLoading ? "..." : sorted.length} applications
         </p>
 
         <Select value={sortBy} onValueChange={(value) => setSortBy(value as SortBy)}>
@@ -193,7 +239,7 @@ export default function Dashboard() {
 
       {/* Applications Table */}
       <div className="rounded-lg border border-border overflow-hidden bg-card">
-        {paginatedApps.length > 0 ? (
+        {!isLoading && paginatedApps.length > 0 ? (
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
@@ -235,26 +281,17 @@ export default function Dashboard() {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuItem
-                            onClick={() => {}}
-                            className="cursor-pointer"
-                          >
-                            <Eye className="mr-2 h-4 w-4" />
-                            View Details
+                          <DropdownMenuItem asChild className="cursor-pointer">
+                            <Link to={`/application/${app.id}`}>
+                              <Eye className="mr-2 h-4 w-4" />
+                              View Details
+                            </Link>
                           </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => {}}
-                            className="cursor-pointer"
-                          >
-                            <Edit2 className="mr-2 h-4 w-4" />
-                            Edit
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => {}}
-                            className="cursor-pointer text-destructive"
-                          >
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            Delete
+                          <DropdownMenuItem asChild className="cursor-pointer">
+                            <Link to={`/edit-application/${app.id}`}>
+                              <Edit2 className="mr-2 h-4 w-4" />
+                              Edit
+                            </Link>
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
@@ -264,14 +301,18 @@ export default function Dashboard() {
               </TableBody>
             </Table>
           </div>
+        ) : isLoading ? (
+          <div className="py-12 text-center">
+            <p className="text-muted-foreground">Loading applications...</p>
+          </div>
         ) : (
           <div className="py-12 text-center">
             <p className="text-muted-foreground">
-              {userApps.length === 0
+              {applications.length === 0
                 ? "No applications yet. Create your first one!"
                 : "No applications match your filters."}
             </p>
-            {userApps.length === 0 && (
+            {applications.length === 0 && (
               <Link to="/applications/new" className="mt-4 inline-block">
                 <Button>Create Application</Button>
               </Link>
