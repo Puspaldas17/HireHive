@@ -321,24 +321,40 @@ export default function ApplicationDetails() {
           </div>
         )}
 
-        {/* Activity Timeline Placeholder - to be implemented in Phase 3.1 */}
+        {/* Notes Section */}
+        <div className="rounded-lg border border-border bg-card p-6 mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-semibold">Notes</h2>
+            {(application.status === "Interview" || application.status === "Offer") && !showInterviewForm && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowInterviewForm(true)}
+              >
+                Add Interview Notes
+              </Button>
+            )}
+          </div>
+          <NotesSection
+            notes={application.notesList || []}
+            onAddNote={handleAddNote}
+          />
+        </div>
+
+        {/* Activity Timeline */}
         {application.activities && application.activities.length > 0 && (
           <div className="rounded-lg border border-border bg-card p-6 mb-8">
             <h2 className="text-lg font-semibold mb-4">Activity Timeline</h2>
-            <div className="space-y-3">
-              {application.activities.slice(0, 5).map((activity) => (
-                <div key={activity.id} className="flex items-start gap-3 text-sm pb-3 border-b border-border last:border-b-0">
-                  <div className="w-2 h-2 rounded-full bg-muted-foreground mt-2 flex-shrink-0" />
-                  <div className="flex-1">
-                    <p className="text-foreground font-medium">{activity.description}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {formatDate(activity.timestamp)}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <ActivityTimeline activities={application.activities} />
           </div>
+        )}
+
+        {/* Interview Notes Form Modal */}
+        {showInterviewForm && (
+          <InterviewNotesForm
+            onSubmit={handleAddInterviewNotes}
+            onClose={() => setShowInterviewForm(false)}
+          />
         )}
       </div>
     </Layout>
