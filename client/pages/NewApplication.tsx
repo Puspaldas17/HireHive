@@ -63,6 +63,22 @@ export default function NewApplication() {
   });
 
   const selectedStatus = watch("status");
+  const selectedResume = watch("resumeId");
+
+  // Load user's resumes
+  useEffect(() => {
+    const loadResumes = async () => {
+      if (!user) return;
+      try {
+        const data = await getResumes(user.id);
+        setResumes(data);
+      } catch (error) {
+        console.error("Failed to load resumes:", error);
+      }
+    };
+
+    loadResumes();
+  }, [user]);
 
   const onSubmit = useCallback(
     async (data: ApplicationFormData) => {
