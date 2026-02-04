@@ -102,6 +102,38 @@ export default function ApplicationDetails() {
     }
   };
 
+  const handleAddNote = useCallback(
+    async (content: string, type: Note['type']) => {
+      if (!user || !id) return;
+
+      try {
+        const updated = await addNoteToApplication(user.id, id, content, type);
+        if (updated) {
+          setApplication(updated);
+          toast({
+            title: "Success",
+            description: "Note added successfully",
+          });
+        }
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: "Failed to add note",
+          variant: "destructive",
+        });
+      }
+    },
+    [user, id, toast]
+  );
+
+  const handleAddInterviewNotes = useCallback(
+    async (content: string) => {
+      await handleAddNote(content, 'interview');
+      setShowInterviewForm(false);
+    },
+    [handleAddNote]
+  );
+
   if (isLoading) {
     return (
       <Layout>
