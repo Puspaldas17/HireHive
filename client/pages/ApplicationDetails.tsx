@@ -31,6 +31,7 @@ export default function ApplicationDetails() {
   const [application, setApplication] = useState<JobApplication | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [showInterviewForm, setShowInterviewForm] = useState(false);
 
   useEffect(() => {
     const loadApplication = async () => {
