@@ -1,12 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { Layout } from "../components/Layout";
 import { Button } from "../components/ui/button";
 import { ArrowLeft, Edit, Trash2, ExternalLink, Loader, AlertCircle } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
-import { getJobApplication, deleteJobApplication } from "../lib/api";
+import { getJobApplication, deleteJobApplication, addNoteToApplication } from "../lib/api";
 import { useToast } from "../hooks/use-toast";
-import { JobApplication } from "../lib/types";
+import { JobApplication, Note } from "../lib/types";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -19,6 +19,9 @@ import {
 } from "../components/ui/alert-dialog";
 import { StatusBadge } from "../components/StatusBadge";
 import { formatDate } from "../lib/utils";
+import { ActivityTimeline } from "../components/ActivityTimeline";
+import { NotesSection } from "../components/NotesSection";
+import { InterviewNotesForm } from "../components/InterviewNotesForm";
 
 export default function ApplicationDetails() {
   const { id } = useParams<{ id: string }>();
