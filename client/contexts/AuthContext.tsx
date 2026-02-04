@@ -1,6 +1,5 @@
 import React, { createContext, useState, useEffect } from "react";
 import { User, AuthContextType } from "../lib/types";
-import { mockUsers } from "../lib/mockData";
 
 export const AuthContext = createContext<AuthContextType | undefined>(
   undefined
@@ -10,41 +9,54 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Initialize from localStorage on mount
+  // Initialize from token on mount
   useEffect(() => {
-    const storedUser = localStorage.getItem("authUser");
-    if (storedUser) {
-      try {
-        const parsedUser = JSON.parse(storedUser);
-        setUser(parsedUser);
-      } catch {
-        localStorage.removeItem("authUser");
+    const initAuth = async () => {
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+        setIsLoading(false);
+        return;
       }
-    }
-    setIsLoading(false);
+
+      try {
+        const res = await fetch("/api/auth/me", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (res.ok) {
+          const userData = await res.json();
+          setUser(userData);
+        } else {
+          localStorage.removeItem("authToken");
+        }
+      } catch (error) {
+        console.error("Auth check failed", error);
+        localStorage.removeItem("authToken");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    initAuth();
   }, []);
 
   const login = async (email: string, password: string): Promise<void> => {
     setIsLoading(true);
     try {
-      // Simulate API call delay
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
 
-      // Find user in mock data
-      const foundUser = mockUsers.find(
-        (u) => u.email === email && u.password === password
-      );
-
-      if (!foundUser) {
-        throw new Error("Invalid email or password");
+      const data = await res.json();
+      
+      if (!res.ok) {
+        throw new Error(data.message || "Login failed");
       }
 
-      // Remove password from stored user
-      const userToStore = { ...foundUser };
-      delete (userToStore as any).password;
-
-      localStorage.setItem("authUser", JSON.stringify(userToStore));
-      setUser(userToStore);
+      localStorage.setItem("authToken", data.token);
+      setUser(data.user);
     } finally {
       setIsLoading(false);
     }
@@ -57,37 +69,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   ): Promise<void> => {
     setIsLoading(true);
     try {
-      // Simulate API call delay
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      const res = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, name, password }),
+      });
 
-      // Check if user already exists
-      if (mockUsers.some((u) => u.email === email)) {
-        throw new Error("Email already registered");
-      }
+      const data = await res.json();
 
-      // Create new user
-      const newUser: User = {
-        id: `user-${Date.now()}`,
-        email,
-        name,
-        password, // In production, this would be hashed
-      };
+      if (!res.ok) throw new Error(data.message || "Signup failed");
 
-      mockUsers.push(newUser);
-
-      // Remove password from stored user
-      const userToStore = { ...newUser };
-      delete (userToStore as any).password;
-
-      localStorage.setItem("authUser", JSON.stringify(userToStore));
-      setUser(userToStore);
+      localStorage.setItem("authToken", data.token);
+      setUser(data.user);
     } finally {
       setIsLoading(false);
     }
   };
 
   const logout = (): void => {
-    localStorage.removeItem("authUser");
+    localStorage.removeItem("authToken");
     setUser(null);
   };
 
