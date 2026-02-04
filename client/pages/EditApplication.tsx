@@ -144,6 +144,7 @@ export default function EditApplication() {
           salary: data.salary || undefined,
           jobUrl: data.jobUrl || undefined,
           interviewDate: data.interviewDate ? new Date(data.interviewDate) : undefined,
+          resumeId: data.resumeId || undefined,
         });
 
         toast({
