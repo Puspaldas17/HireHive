@@ -34,6 +34,7 @@ const applicationSchema = z.object({
   salary: z.string().optional(),
   jobUrl: z.string().url("Please enter a valid URL").optional().or(z.literal("")),
   notes: z.string().optional(),
+  resumeId: z.string().optional(),
 });
 
 type ApplicationFormData = z.infer<typeof applicationSchema>;
@@ -46,6 +47,7 @@ export default function EditApplication() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [application, setApplication] = useState<JobApplication | null>(null);
+  const [resumes, setResumes] = useState<Resume[]>([]);
 
   const {
     register,
