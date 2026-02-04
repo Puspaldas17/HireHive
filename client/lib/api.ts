@@ -32,6 +32,18 @@ export async function getJobApplications(
       applicationDate: new Date(app.applicationDate),
       lastUpdated: new Date(app.lastUpdated),
       interviewDate: app.interviewDate ? new Date(app.interviewDate) : undefined,
+      statusHistory: app.statusHistory?.map((entry: any) => ({
+        ...entry,
+        changedAt: new Date(entry.changedAt),
+      })),
+      notesList: app.notesList?.map((note: any) => ({
+        ...note,
+        createdAt: new Date(note.createdAt),
+      })),
+      activities: app.activities?.map((activity: any) => ({
+        ...activity,
+        timestamp: new Date(activity.timestamp),
+      })),
     }));
 }
 
