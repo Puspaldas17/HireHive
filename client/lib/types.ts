@@ -57,6 +57,8 @@ export interface JobApplication {
   statusHistory?: StatusHistory[];
   notesList?: Note[];
   activities?: Activity[];
+  jobPostId?: string;
+  jobPost?: JobPost;
 }
 
 export interface StatusHistory {

@@ -94,6 +94,9 @@ export function RecruiterDashboard() {
                             <div className="flex gap-2">
                                 <Button variant="ghost" size="sm">Edit</Button>
                                 <Button variant="ghost" size="sm" className="text-destructive">Close</Button>
+                                <Link to={`/recruiter/jobs/${job.id}/applicants`}>
+                                    <Button size="sm" variant="secondary">View Applicants</Button>
+                                </Link>
                             </div>
                         </div>
                     </CardContent>
