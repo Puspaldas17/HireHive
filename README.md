@@ -4,16 +4,20 @@ HireHive is a modern, full-stack web application designed to streamline the hiri
 
 ## 🚀 Features
 
-- **Modern UI/UX**: Built with React and Tailwind CSS for a responsive and accessible design.
-- **Rich Interactions**: Utilizes Framer Motion for smooth animations and transitions.
-- **Client-Side Persistence**: Uses LocalStorage for data persistence (Demo Mode).
-- **Type Safety**: Fully typed with TypeScript.
-- **Component Library**: leveraging Shadcn UI (Radix UI) for consistent and customizable components.
+- **Role-Based Access Control**: Distinct portals for **Job Seekers**, **Recruiters**, and **Admins**.
+- **Job Management**: Recruiters can create, manage, and track job postings.
+- **Application Tracking**: Kanban-style (implied) or list view for tracking application status (Applied, Interview, Offer, Rejected).
+- **Resume Management**: Upload and manage resumes securely.
+- **Modern UI/UX**: Built with **React** and **Tailwind CSS** for a responsive and accessible design.
+- **Rich Interactions**: Utilizes **Framer Motion** for smooth animations.
+- **Type Safety**: Fully typed with **TypeScript** across the entire stack.
+- **Database ORM**: Uses **Prisma** for robust database component interaction.
 
 ## 🛠️ Tech Stack
 
 ### Frontend
 
+- **Framework**: [React](https://react.dev/) (via [Vite](https://vitejs.dev/))
 - **Language**: [TypeScript](https://www.typescriptlang.org/)
 - **Styling**: [Tailwind CSS](https://tailwindcss.com/)
 - **UI Components**: [Shadcn UI](https://ui.shadcn.com/) / [Radix UI](https://www.radix-ui.com/)
@@ -26,7 +30,10 @@ HireHive is a modern, full-stack web application designed to streamline the hiri
 - **Runtime**: [Node.js](https://nodejs.org/)
 - **Framework**: [Express.js](https://expressjs.com/)
 - **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **Database**: SQLite (Development) / Configurable via Prisma
+- **ORM**: [Prisma](https://www.prisma.io/)
 - **Validation**: [Zod](https://zod.dev/)
+- **Authentication**: JWT (JSON Web Tokens) & bcryptjs
 
 ### Tooling
 
@@ -39,17 +46,18 @@ HireHive is a modern, full-stack web application designed to streamline the hiri
 HireHive/
 ├── client/                 # Frontend React application
 │   ├── components/         # Reusable UI components
-│   ├── contexts/           # React context providers
 │   ├── hooks/              # Custom React hooks
 │   ├── lib/                # Utility functions and libraries
 │   ├── pages/              # Application views/pages
 │   └── App.tsx             # Main application component
 ├── server/                 # Backend Express application
-│   ├── routes/             # API route definitions
+│   ├── routes/             # API route definitions (auth, jobs, etc.)
+│   ├── middleware/         # Express middleware (auth, error handling)
 │   └── index.ts            # Server entry point
-├── shared/                 # Shared code between client and server
+├── shared/                 # Shared code between client and server (types, schemas)
+├── prisma/                 # Database schema and migrations
 ├── public/                 # Static assets
-└── package.json            # Project dependencies and scripts
+└── package.json            # Project dependencies and workspace scripts
 ```
 
 ## ⚡ Getting Started
@@ -59,7 +67,7 @@ Follow these steps to set up the project locally.
 ### Prerequisites
 
 - [Node.js](https://nodejs.org/) (v18 or higher recommended)
-- [npm](https://www.npmjs.com/) or [pnpm](https://pnpm.io/)
+- [npm](https://www.npmjs.com/) installed
 
 ### Installation
 
@@ -71,19 +79,38 @@ Follow these steps to set up the project locally.
     ```
 
 2.  **Install dependencies:**
+
     ```bash
     npm install
     ```
 
+### Configuration
+
+Create a `.env` file in the root directory (or ensure the defaults work for you). The project uses `dotenv` to load environment variables.
+
+**Required Variables:**
+
+```env
+# Database connection string (default uses local SQLite file)
+DATABASE_URL="file:./dev.db"
+
+# JWT Secret for authentication (Change this for production!)
+JWT_SECRET="super-secret-key"
+
+# Optional: Server Port (default: 3000 in prod, 8080 in dev via Vite)
+PORT=3000
+```
+
 ### Running the Application
 
-To start the development server (runs both client and server in development mode):
+**Development Mode:**
+To start the development server (runs both client and server in development mode with hot-reloading):
 
 ```bash
 npm run dev
 ```
 
-The application will be available at `http://localhost:5173` (or the port shown in your terminal).
+The application will be available at `http://localhost:8080` (or `http://localhost:5173`).
 
 ### Building for Production
 
@@ -93,10 +120,7 @@ To build the application for production:
 npm run build
 ```
 
-This command builds both the client and server.
-
-- **Client Build**: `npm run build:client`
-- **Server Build**: `npm run build:server`
+This command builds both the client (to `dist/spa`) and the server (to `dist/server`).
 
 ### Starting Production Server
 
@@ -105,6 +129,8 @@ After building, you can start the production server:
 ```bash
 npm start
 ```
+
+This serves the static frontend assets and the API from the node backend.
 
 ## 🧪 Testing
 
@@ -116,8 +142,4 @@ npm test
 
 ## 📝 License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
----
-
-Made with ❤️ by the HireHive Team.
+This project is licensed under the MIT License.
