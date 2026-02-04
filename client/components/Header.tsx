@@ -9,6 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { Menu, LogOut, User, Briefcase } from "lucide-react";
+import { ModeToggle } from "./mode-toggle";
 
 export function Header() {
   const { user, logout } = useAuth();
@@ -61,7 +62,8 @@ export function Header() {
           {user ? (
             <>
               {/* Desktop User Menu */}
-              <div className="hidden md:block">
+              <div className="hidden items-center gap-2 md:flex">
+                <ModeToggle />
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="sm">
@@ -95,7 +97,8 @@ export function Header() {
               </div>
 
               {/* Mobile Menu */}
-              <div className="md:hidden">
+              <div className="md:hidden flex items-center gap-2">
+                <ModeToggle />
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="sm">
@@ -141,14 +144,15 @@ export function Header() {
               </div>
             </>
           ) : (
-            <>
+            <div className="flex items-center gap-2">
+              <ModeToggle />
               <Link to="/auth/login">
                 <Button variant="ghost">Login</Button>
               </Link>
               <Link to="/auth/signup">
                 <Button>Sign Up</Button>
               </Link>
-            </>
+            </div>
           )}
         </div>
       </div>
