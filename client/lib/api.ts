@@ -301,3 +301,52 @@ export async function getAnalytics(userId: string): Promise<AnalyticsStats> {
     avgDaysToInterview,
   };
 }
+
+// Add a note to an application
+export async function addNoteToApplication(
+  userId: string,
+  applicationId: string,
+  content: string,
+  type: Note['type'] = 'general'
+): Promise<JobApplication | null> {
+  initializeStorage();
+  const stored = localStorage.getItem(APPLICATIONS_STORAGE_KEY);
+  const applications = stored ? JSON.parse(stored) : mockJobApplications;
+
+  const index = applications.findIndex(
+    (app: JobApplication) => app.id === applicationId && app.userId === userId
+  );
+
+  if (index === -1) return null;
+
+  const now = new Date();
+  const newNote: Note = {
+    id: `note-${Date.now()}`,
+    content,
+    type,
+    createdAt: now,
+  };
+
+  const notesList = applications[index].notesList || [];
+  const activities = applications[index].activities || [];
+
+  const updated = {
+    ...applications[index],
+    notesList: [...notesList, newNote],
+    activities: [
+      ...activities,
+      {
+        id: `act-${Date.now()}`,
+        type: 'note_added' as const,
+        timestamp: now,
+        description: `${type === 'interview' ? 'Interview note' : type === 'followup' ? 'Follow-up' : 'Note'} added`,
+      },
+    ],
+    lastUpdated: now,
+  };
+
+  applications[index] = updated;
+  localStorage.setItem(APPLICATIONS_STORAGE_KEY, JSON.stringify(applications));
+
+  return updated;
+}
