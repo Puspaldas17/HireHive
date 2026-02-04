@@ -19,6 +19,8 @@ import EditApplication from "./pages/EditApplication";
 import Analytics from "./pages/Analytics";
 import Resume from "./pages/Resume";
 import Profile from "./pages/Profile";
+import AdminDashboard from "./pages/AdminDashboard";
+import AdminUsers from "./pages/AdminUsers";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
