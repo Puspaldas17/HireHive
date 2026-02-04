@@ -16,6 +16,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import { RecruiterDashboard } from "./pages/RecruiterDashboard";
 import { PostJob } from "./pages/PostJob";
+import { JobExplorer } from "./pages/JobExplorer";
 import Dashboard from "./pages/Dashboard";
 import NewApplication from "./pages/NewApplication";
 import ApplicationDetails from "./pages/ApplicationDetails";
@@ -52,6 +53,7 @@ export const App = () => (
                 </ProtectedRoute>
               }
             />
+             <Route path="/jobs" element={<JobExplorer />} />
              <Route
               path="/recruiter/jobs/new"
               element={

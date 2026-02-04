@@ -57,6 +57,51 @@ router.post("/", authenticateToken, requireRecruiter, async (req: AuthRequest, r
   }
 });
 
+// GET Public Jobs (Search & Filter)
+router.get("/", async (req, res) => {
+  try {
+    const { search, type, location, remote } = req.query;
+
+    const where: any = {
+      status: "OPEN",
+    };
+
+    if (search) {
+      where.OR = [
+        { title: { contains: String(search) } }, // SQLite doesn't support mode: 'insensitive' easily in older Prisma versions, but usually fine
+        { description: { contains: String(search) } },
+        { skills: { contains: String(search) } },
+      ];
+    }
+
+    if (type && type !== "All") {
+      where.type = String(type);
+    }
+
+    if (location) {
+      where.location = { contains: String(location) };
+    }
+
+    if (remote === "true") {
+      where.remote = true;
+    }
+
+    const jobs = await prisma.jobPost.findMany({
+      where,
+      include: {
+        company: {
+          select: { name: true, logoUrl: true, location: true },
+        },
+      },
+      orderBy: { postedAt: "desc" },
+    });
+
+    res.json(jobs);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+});
+
 // GET My Jobs (Manage)
 router.get("/manage", authenticateToken, requireRecruiter, async (req: AuthRequest, res) => {
   try {

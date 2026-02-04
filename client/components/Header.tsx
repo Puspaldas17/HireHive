@@ -33,6 +33,13 @@ export function Header() {
 
         {/* Navigation - Desktop */}
         <nav className="hidden gap-6 md:flex">
+          <Link
+            to="/jobs"
+            className="text-foreground hover:text-primary transition font-medium"
+          >
+            Find Jobs
+          </Link>
+          
           {user && (
             <>
               {user.role === "recruiter" ? (
