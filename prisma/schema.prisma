@@ -19,6 +19,37 @@ model User {
 
   applications JobApplication[]
   resumes      Resume[]
+  companies    Company[]
+}
+
+model Company {
+  id          String    @id @default(uuid())
+  name        String
+  description String?
+  logoUrl     String?
+  website     String?
+  location    String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  jobs        JobPost[]
+}
+
+model JobPost {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  skills      String   // Comma separated
+  salary      String?
+  type        String   // Full-time, etc
+  location    String?
+  remote      Boolean  @default(false)
+  status      String   @default("OPEN") // OPEN, CLOSED
+  postedAt    DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  companyId   String
+  company     Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
 }
 
 model JobApplication {

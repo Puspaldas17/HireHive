@@ -65,14 +65,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signup = async (
     email: string,
     name: string,
-    password: string
+    password: string,
+    role?: "user" | "recruiter",
+    companyName?: string
   ): Promise<void> => {
     setIsLoading(true);
     try {
       const res = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, name, password }),
+        body: JSON.stringify({ email, name, password, role, companyName }),
       });
 
       const data = await res.json();

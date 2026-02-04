@@ -12,6 +12,8 @@ export default function Signup() {
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [isRecruiter, setIsRecruiter] = useState(false);
+  const [companyName, setCompanyName] = useState("");
   const [error, setError] = useState("");
   const { signup, isLoading } = useAuth();
   const navigate = useNavigate();
@@ -22,6 +24,11 @@ export default function Signup() {
 
     if (!email || !name || !password || !confirmPassword) {
       setError("Please fill in all fields");
+      return;
+    }
+
+    if (isRecruiter && !companyName) {
+      setError("Company Name is required for recruiters");
       return;
     }
 
@@ -36,8 +43,19 @@ export default function Signup() {
     }
 
     try {
-      await signup(email, name, password);
-      navigate("/dashboard");
+      await signup(
+        email, 
+        name, 
+        password, 
+        isRecruiter ? "recruiter" : "user", 
+        isRecruiter ? companyName : undefined
+      );
+      // Redirect based on role
+      if (isRecruiter) {
+        navigate("/recruiter/dashboard");
+      } else {
+        navigate("/dashboard");
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Signup failed");
     }
@@ -51,7 +69,7 @@ export default function Signup() {
           <div className="mb-8 text-center">
             <h1 className="text-3xl font-bold text-foreground">Sign Up</h1>
             <p className="mt-2 text-muted-foreground">
-              Create your account to start tracking job applications
+              Create your {isRecruiter ? "recruiter" : "seeker"} account
             </p>
           </div>
 
@@ -114,6 +132,35 @@ export default function Signup() {
                 disabled={isLoading}
               />
             </div>
+
+            <div className="flex items-center space-x-2 py-2">
+              <input
+                type="checkbox"
+                id="recruiter-toggle"
+                className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                checked={isRecruiter}
+                onChange={(e) => setIsRecruiter(e.target.checked)}
+                disabled={isLoading}
+              />
+              <label htmlFor="recruiter-toggle" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                I am hiring (Recruiter Account)
+              </label>
+            </div>
+
+            {isRecruiter && (
+              <div className="animate-in fade-in slide-in-from-top-2">
+                <label className="block text-sm font-medium text-foreground mb-1">
+                  Company Name
+                </label>
+                <Input
+                  type="text"
+                  placeholder="Acme Corp"
+                  value={companyName}
+                  onChange={(e) => setCompanyName(e.target.value)}
+                  disabled={isLoading}
+                />
+              </div>
+            )}
 
             <Button
               type="submit"

@@ -14,6 +14,8 @@ import { ThemeProvider } from "./components/theme-provider";
 import Homepage from "./pages/Homepage";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import { RecruiterDashboard } from "./pages/RecruiterDashboard";
+import { PostJob } from "./pages/PostJob";
 import Dashboard from "./pages/Dashboard";
 import NewApplication from "./pages/NewApplication";
 import ApplicationDetails from "./pages/ApplicationDetails";
@@ -42,7 +44,23 @@ export const App = () => (
               <Route path="/auth/login" element={<Login />} />
               <Route path="/auth/signup" element={<Signup />} />
 
-              {/* Protected Routes */}
+              <Route
+              path="/recruiter/dashboard"
+              element={
+                <ProtectedRoute>
+                  <RecruiterDashboard />
+                </ProtectedRoute>
+              }
+            />
+             <Route
+              path="/recruiter/jobs/new"
+              element={
+                <ProtectedRoute>
+                  <PostJob />
+                </ProtectedRoute>
+              }
+            />
+            {/* ... other protected routes */}
               <Route
                 path="/dashboard"
                 element={

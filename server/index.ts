@@ -4,6 +4,7 @@ import cors from "cors";
 import { authRouter } from "./routes/auth";
 import { applicationRouter } from "./routes/applications";
 import { resumeRouter } from "./routes/resumes";
+import { jobRouter } from "./routes/jobs";
 
 export function createServer() {
   const app = express();
@@ -17,6 +18,7 @@ export function createServer() {
   app.use("/api/auth", authRouter);
   app.use("/api/applications", applicationRouter);
   app.use("/api/resumes", resumeRouter);
+  app.use("/api/jobs", jobRouter);
 
   // Example API routes
   app.get("/api/ping", (_req, res) => {
