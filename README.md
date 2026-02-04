@@ -6,15 +6,14 @@ HireHive is a modern, full-stack web application designed to streamline the hiri
 
 - **Modern UI/UX**: Built with React and Tailwind CSS for a responsive and accessible design.
 - **Rich Interactions**: Utilizes Framer Motion for smooth animations and transitions.
-- **Type Safety**: Fully typed with TypeScript on both consumer and server sides.
-- **Backend Integration**: Powered by a robust Express.js server.
+- **Client-Side Persistence**: Uses LocalStorage for data persistence (Demo Mode).
+- **Type Safety**: Fully typed with TypeScript.
 - **Component Library**: leveraging Shadcn UI (Radix UI) for consistent and customizable components.
 
 ## 🛠️ Tech Stack
 
 ### Frontend
 
-- **Framework**: [React](https://reactjs.org/) (via [Vite](https://vitejs.dev/))
 - **Language**: [TypeScript](https://www.typescriptlang.org/)
 - **Styling**: [Tailwind CSS](https://tailwindcss.com/)
 - **UI Components**: [Shadcn UI](https://ui.shadcn.com/) / [Radix UI](https://www.radix-ui.com/)

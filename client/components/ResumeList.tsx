@@ -1,6 +1,6 @@
 import { Resume } from "@/lib/types";
 import { Button } from "@/components/ui/button";
-import { FileText, Download, Trash2, Format } from "lucide-react";
+import { FileText, Download, Trash2 } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 
 interface ResumeListProps {
