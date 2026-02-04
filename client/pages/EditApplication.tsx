@@ -332,6 +332,30 @@ export default function EditApplication() {
               <p className="text-xs text-muted-foreground">Optional - add any important details or reminders</p>
             </div>
 
+            {/* Resume Selection */}
+            {resumes.length > 0 && (
+              <div className="space-y-2">
+                <Label htmlFor="resumeId">Select Resume (Optional)</Label>
+                <Select
+                  value={selectedResume || ""}
+                  onValueChange={(value) => setValue("resumeId", value || undefined)}
+                >
+                  <SelectTrigger id="resumeId">
+                    <SelectValue placeholder="Select a resume (optional)" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">No Resume</SelectItem>
+                    {resumes.map((resume) => (
+                      <SelectItem key={resume.id} value={resume.id}>
+                        {resume.fileName}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-muted-foreground">Optional - attach a resume to this application</p>
+              </div>
+            )}
+
             {/* Form Actions */}
             <div className="flex gap-4 pt-4">
               <Button
