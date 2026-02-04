@@ -51,7 +51,7 @@ router.post("/signup", async (req, res) => {
       });
 
       if (role === 'recruiter' && companyName) {
-        await tx.company.create({
+        await (tx as any).company.create({
           data: {
             name: companyName,
             userId: user.id

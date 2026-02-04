@@ -5,6 +5,7 @@ import {
   JobStatus,
   Note,
   Activity,
+  JobPost,
 } from "./types";
 
 // Helper to get headers with Auth token
@@ -114,6 +115,25 @@ export async function updateApplicationStatus(
   status: JobStatus,
 ): Promise<JobApplication | null> {
   return updateJobApplication(userId, applicationId, { status });
+}
+
+// Search jobs
+export async function searchJobs(params: {
+  search?: string;
+  type?: string;
+  location?: string;
+  remote?: boolean;
+}): Promise<JobPost[]> {
+  const query = new URLSearchParams();
+  if (params.search) query.append("search", params.search);
+  if (params.type && params.type !== "All") query.append("type", params.type);
+  if (params.location) query.append("location", params.location);
+  if (params.remote) query.append("remote", "true");
+
+  const res = await fetch(`/api/jobs?${query.toString()}`, {
+    headers: getHeaders(), // Optional for public, but good practice if rate limited
+  });
+  return handleResponse<JobPost[]>(res);
 }
 
 // Get all resumes for a user

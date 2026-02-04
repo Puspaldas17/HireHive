@@ -182,4 +182,87 @@ router.delete("/:id", authenticateToken, requireRecruiter, async (req: AuthReque
     }
   });
 
+// APPLY to a Job (Internal)
+router.post("/:id/apply", authenticateToken, async (req: AuthRequest, res) => {
+  try {
+    const userId = req.user!.userId;
+    const jobId = req.params.id;
+
+    // Check if job exists
+    const job = await prisma.jobPost.findUnique({ where: { id: jobId }, include: { company: true } });
+    if (!job) return res.status(404).json({ message: "Job not found" });
+
+    // Check if already applied
+    const existing = await prisma.jobApplication.findFirst({
+      where: {
+        userId,
+        jobPostId: jobId,
+      },
+    });
+
+    if (existing) {
+      return res.status(400).json({ message: "You have already applied to this job" });
+    }
+
+    // Create Application
+    const application = await prisma.jobApplication.create({
+      data: {
+        userId,
+        jobPostId: jobId,
+        company: job.company.name, // Denormalize for easier access in lists
+        jobRole: job.title,
+        status: "Applied",
+        applicationDate: new Date(),
+        salary: job.salary,
+        notes: "Applied via HireHive",
+      },
+    });
+
+    // Add initial status history
+    await prisma.statusHistory.create({
+      data: {
+        status: "Applied",
+        applicationId: application.id,
+      },
+    });
+    
+    // Log activity
+    await prisma.activity.create({
+        data: {
+            type: "status_change",
+            description: `Applied to ${job.title} at ${job.company.name}`,
+            applicationId: application.id
+        }
+    })
+
+    res.json(application);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+});
+
+// GET Applicants for a Job (Recruiter)
+router.get("/:id/applicants", authenticateToken, async (req: AuthRequest, res) => {
+  try {
+     const userId = req.user!.userId;
+     const jobId = req.params.id;
+
+     // Verify ownership
+     const job = await prisma.jobPost.findUnique({ where: { id: jobId }, include: { company: true }});
+     
+     if (!job) return res.status(404).json({ message: "Job not found" });
+     if (job.company.userId !== userId) return res.status(403).json({ message: "Unauthorized"});
+
+     const applicants = await prisma.jobApplication.findMany({
+         where: { jobPostId: jobId },
+         include: { user: { select: { name: true, email: true } } },
+         orderBy: { applicationDate: 'desc' }
+     });
+
+     res.json(applicants);
+  } catch (error) {
+      res.status(500).json({ message: "Server error" });
+  }
+});
+
 export const jobRouter = router;

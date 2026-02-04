@@ -16,7 +16,9 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import { RecruiterDashboard } from "./pages/RecruiterDashboard";
 import { PostJob } from "./pages/PostJob";
+import { JobApplicants } from "./pages/JobApplicants";
 import { JobExplorer } from "./pages/JobExplorer";
+import { JobDetails } from "./pages/JobDetails";
 import Dashboard from "./pages/Dashboard";
 import NewApplication from "./pages/NewApplication";
 import ApplicationDetails from "./pages/ApplicationDetails";
@@ -54,11 +56,20 @@ export const App = () => (
               }
             />
              <Route path="/jobs" element={<JobExplorer />} />
+             <Route path="/jobs/:id" element={<JobDetails />} />
              <Route
               path="/recruiter/jobs/new"
               element={
                 <ProtectedRoute>
                   <PostJob />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/recruiter/jobs/:id/applicants"
+              element={
+                <ProtectedRoute>
+                  <JobApplicants />
                 </ProtectedRoute>
               }
             />

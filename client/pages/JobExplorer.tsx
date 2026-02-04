@@ -1,25 +1,19 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Search, MapPin, Briefcase, DollarSign, Building } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Search, MapPin, Building, Briefcase, DollarSign } from "lucide-react";
+import { Header } from "@/components/Header";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { JobPost } from "@/lib/types";
+import { searchJobs } from "@/lib/api";
 
 export function JobExplorer() {
   const [jobs, setJobs] = useState<JobPost[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  // Filters
+  const [isLoading, setIsLoading] = useState(false);
   const [search, setSearch] = useState("");
   const [location, setLocation] = useState("");
   const [type, setType] = useState("All");
@@ -27,33 +21,25 @@ export function JobExplorer() {
 
   const fetchJobs = async () => {
     setIsLoading(true);
-    const params = new URLSearchParams();
-    if (search) params.append("search", search);
-    if (location) params.append("location", location);
-    if (type && type !== "All") params.append("type", type);
-    if (remote) params.append("remote", "true");
-
     try {
-      const res = await fetch(`/api/jobs?${params.toString()}`);
-      const data = await res.json();
+      const data = await searchJobs({ search, location, type, remote });
       setJobs(data);
     } catch (error) {
-      console.error("Failed to fetch jobs", error);
+      console.error("Failed to load jobs", error);
+      setJobs([]);
     } finally {
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    // Debounce search slightly or just fetch on effect
-    const timer = setTimeout(() => {
-        fetchJobs();
-    }, 300);
-    return () => clearTimeout(timer);
-  }, [search, location, type, remote]);
+    fetchJobs();
+  }, []);
 
   return (
-    <div className="min-h-screen bg-background pb-12">
+    <div className="min-h-screen bg-background flex flex-col">
+      <Header />
+      <div className="flex-1 pb-12">
       {/* Hero Search Section */}
       <div className="bg-muted py-12 px-6">
         <div className="container mx-auto max-w-4xl space-y-6">
@@ -136,7 +122,7 @@ export function JobExplorer() {
         ) : jobs.length === 0 ? (
             <div className="text-center py-20 border rounded-lg bg-card text-muted-foreground">
                 <p>No jobs found matching your criteria.</p>
-                <Button variant="link" onClick={() => { setSearch(''); setLocation(''); setType('All'); setRemote(false); }}>
+                <Button variant="link" onClick={() => { setSearch(''); setLocation(''); setType('All'); setRemote(false); fetchJobs(); }}>
                     Clear Filters
                 </Button>
             </div>
@@ -193,6 +179,7 @@ export function JobExplorer() {
                 ))}
             </div>
         )}
+      </div>
       </div>
     </div>
   );
