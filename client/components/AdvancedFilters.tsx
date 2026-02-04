@@ -1,18 +1,24 @@
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { X, Filter } from 'lucide-react';
-import { JobStatus } from '@/lib/types';
+} from "@/components/ui/select";
+import { X, Filter } from "lucide-react";
+import { JobStatus } from "@/lib/types";
 
-const jobStatusOptions: JobStatus[] = ["Applied", "Interview", "Offer", "Rejected", "OnHold"];
+const jobStatusOptions: JobStatus[] = [
+  "Applied",
+  "Interview",
+  "Offer",
+  "Rejected",
+  "OnHold",
+];
 
 export interface FilterOptions {
   status?: JobStatus;
@@ -47,7 +53,9 @@ export function AdvancedFilters({
     });
   };
 
-  const hasActiveFilters = Object.values(filters).some((value) => value !== undefined && value !== '');
+  const hasActiveFilters = Object.values(filters).some(
+    (value) => value !== undefined && value !== "",
+  );
 
   if (!isOpen) {
     return (
@@ -55,11 +63,15 @@ export function AdvancedFilters({
         variant="outline"
         size="sm"
         onClick={() => setIsOpen(true)}
-        className={hasActiveFilters ? 'border-primary' : ''}
+        className={hasActiveFilters ? "border-primary" : ""}
       >
         <Filter className="h-4 w-4 mr-2" />
         Filters
-        {hasActiveFilters && <span className="ml-1 text-xs bg-primary text-primary-foreground px-2 py-0.5 rounded-full">Active</span>}
+        {hasActiveFilters && (
+          <span className="ml-1 text-xs bg-primary text-primary-foreground px-2 py-0.5 rounded-full">
+            Active
+          </span>
+        )}
       </Button>
     );
   }
@@ -68,11 +80,7 @@ export function AdvancedFilters({
     <div className="bg-muted/50 border border-border rounded-lg p-4 mb-4">
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-semibold text-foreground">Advanced Filters</h3>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => setIsOpen(false)}
-        >
+        <Button variant="ghost" size="sm" onClick={() => setIsOpen(false)}>
           <X className="h-4 w-4" />
         </Button>
       </div>
@@ -82,9 +90,9 @@ export function AdvancedFilters({
         <div className="space-y-2">
           <Label htmlFor="filter-status">Status</Label>
           <Select
-            value={filters.status || ''}
+            value={filters.status || ""}
             onValueChange={(value) =>
-              handleFilterChange('status', value || undefined)
+              handleFilterChange("status", value || undefined)
             }
           >
             <SelectTrigger id="filter-status" className="text-sm">
@@ -107,8 +115,10 @@ export function AdvancedFilters({
           <Input
             id="filter-company"
             placeholder="Filter by company..."
-            value={filters.company || ''}
-            onChange={(e) => handleFilterChange('company', e.target.value || undefined)}
+            value={filters.company || ""}
+            onChange={(e) =>
+              handleFilterChange("company", e.target.value || undefined)
+            }
             className="text-sm"
           />
         </div>
@@ -119,8 +129,10 @@ export function AdvancedFilters({
           <Input
             id="filter-role"
             placeholder="Filter by role..."
-            value={filters.jobRole || ''}
-            onChange={(e) => handleFilterChange('jobRole', e.target.value || undefined)}
+            value={filters.jobRole || ""}
+            onChange={(e) =>
+              handleFilterChange("jobRole", e.target.value || undefined)
+            }
             className="text-sm"
           />
         </div>
@@ -131,8 +143,10 @@ export function AdvancedFilters({
           <Input
             id="filter-start"
             type="date"
-            value={filters.startDate || ''}
-            onChange={(e) => handleFilterChange('startDate', e.target.value || undefined)}
+            value={filters.startDate || ""}
+            onChange={(e) =>
+              handleFilterChange("startDate", e.target.value || undefined)
+            }
             className="text-sm"
           />
         </div>
@@ -143,8 +157,10 @@ export function AdvancedFilters({
           <Input
             id="filter-end"
             type="date"
-            value={filters.endDate || ''}
-            onChange={(e) => handleFilterChange('endDate', e.target.value || undefined)}
+            value={filters.endDate || ""}
+            onChange={(e) =>
+              handleFilterChange("endDate", e.target.value || undefined)
+            }
             className="text-sm"
           />
         </div>
@@ -156,8 +172,10 @@ export function AdvancedFilters({
             id="filter-min-salary"
             type="number"
             placeholder="e.g., 100000"
-            value={filters.minSalary || ''}
-            onChange={(e) => handleFilterChange('minSalary', e.target.value || undefined)}
+            value={filters.minSalary || ""}
+            onChange={(e) =>
+              handleFilterChange("minSalary", e.target.value || undefined)
+            }
             className="text-sm"
           />
         </div>
@@ -169,8 +187,10 @@ export function AdvancedFilters({
             id="filter-max-salary"
             type="number"
             placeholder="e.g., 300000"
-            value={filters.maxSalary || ''}
-            onChange={(e) => handleFilterChange('maxSalary', e.target.value || undefined)}
+            value={filters.maxSalary || ""}
+            onChange={(e) =>
+              handleFilterChange("maxSalary", e.target.value || undefined)
+            }
             className="text-sm"
           />
         </div>
@@ -184,7 +204,12 @@ export function AdvancedFilters({
             <input
               type="checkbox"
               checked={filters.hasInterview || false}
-              onChange={(e) => handleFilterChange('hasInterview', e.target.checked || undefined)}
+              onChange={(e) =>
+                handleFilterChange(
+                  "hasInterview",
+                  e.target.checked || undefined,
+                )
+              }
               className="rounded border-border"
             />
             <span className="text-sm">Has Interview Scheduled</span>
@@ -193,7 +218,9 @@ export function AdvancedFilters({
             <input
               type="checkbox"
               checked={filters.hasResume || false}
-              onChange={(e) => handleFilterChange('hasResume', e.target.checked || undefined)}
+              onChange={(e) =>
+                handleFilterChange("hasResume", e.target.checked || undefined)
+              }
               className="rounded border-border"
             />
             <span className="text-sm">Has Resume</span>
@@ -202,7 +229,9 @@ export function AdvancedFilters({
             <input
               type="checkbox"
               checked={filters.hasNotes || false}
-              onChange={(e) => handleFilterChange('hasNotes', e.target.checked || undefined)}
+              onChange={(e) =>
+                handleFilterChange("hasNotes", e.target.checked || undefined)
+              }
               className="rounded border-border"
             />
             <span className="text-sm">Has Notes</span>
@@ -222,10 +251,7 @@ export function AdvancedFilters({
         >
           Clear All
         </Button>
-        <Button
-          size="sm"
-          onClick={() => setIsOpen(false)}
-        >
+        <Button size="sm" onClick={() => setIsOpen(false)}>
           Apply Filters
         </Button>
       </div>

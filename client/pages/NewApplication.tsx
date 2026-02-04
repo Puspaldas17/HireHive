@@ -21,18 +21,34 @@ import { createJobApplication, getResumes } from "../lib/api";
 import { useToast } from "../hooks/use-toast";
 import { JobStatus, Resume } from "../lib/types";
 
-const jobStatusOptions: JobStatus[] = ["Applied", "Interview", "Offer", "Rejected", "OnHold"];
+const jobStatusOptions: JobStatus[] = [
+  "Applied",
+  "Interview",
+  "Offer",
+  "Rejected",
+  "OnHold",
+];
 
 const applicationSchema = z.object({
-  company: z.string().min(1, "Company name is required").min(2, "Company name must be at least 2 characters"),
-  jobRole: z.string().min(1, "Job role is required").min(2, "Job role must be at least 2 characters"),
+  company: z
+    .string()
+    .min(1, "Company name is required")
+    .min(2, "Company name must be at least 2 characters"),
+  jobRole: z
+    .string()
+    .min(1, "Job role is required")
+    .min(2, "Job role must be at least 2 characters"),
   status: z.enum(["Applied", "Interview", "Offer", "Rejected", "OnHold"], {
     errorMap: () => ({ message: "Status is required" }),
   }),
   applicationDate: z.string().min(1, "Application date is required"),
   interviewDate: z.string().optional(),
   salary: z.string().optional(),
-  jobUrl: z.string().url("Please enter a valid URL").optional().or(z.literal("")),
+  jobUrl: z
+    .string()
+    .url("Please enter a valid URL")
+    .optional()
+    .or(z.literal("")),
   notes: z.string().optional(),
   resumeId: z.string().optional(),
 });
@@ -102,7 +118,9 @@ export default function NewApplication() {
           notes: data.notes || "",
           salary: data.salary || undefined,
           jobUrl: data.jobUrl || undefined,
-          interviewDate: data.interviewDate ? new Date(data.interviewDate) : undefined,
+          interviewDate: data.interviewDate
+            ? new Date(data.interviewDate)
+            : undefined,
           resumeId: data.resumeId || undefined,
         });
 
@@ -122,7 +140,7 @@ export default function NewApplication() {
         setIsSubmitting(false);
       }
     },
-    [user, navigate, toast]
+    [user, navigate, toast],
   );
 
   return (
@@ -137,7 +155,9 @@ export default function NewApplication() {
       </div>
 
       <div className="max-w-2xl">
-        <h1 className="text-3xl font-bold text-foreground mb-2">Add New Application</h1>
+        <h1 className="text-3xl font-bold text-foreground mb-2">
+          Add New Application
+        </h1>
         <p className="text-muted-foreground mb-8">
           Create a new job application entry and track your progress
         </p>
@@ -183,9 +203,14 @@ export default function NewApplication() {
               <Label htmlFor="status">Status *</Label>
               <Select
                 value={selectedStatus}
-                onValueChange={(value) => setValue("status", value as JobStatus)}
+                onValueChange={(value) =>
+                  setValue("status", value as JobStatus)
+                }
               >
-                <SelectTrigger id="status" className={errors.status ? "border-red-500" : ""}>
+                <SelectTrigger
+                  id="status"
+                  className={errors.status ? "border-red-500" : ""}
+                >
                   <SelectValue placeholder="Select status" />
                 </SelectTrigger>
                 <SelectContent>
@@ -247,7 +272,9 @@ export default function NewApplication() {
                 placeholder="e.g., $150,000 - $200,000"
                 {...register("salary")}
               />
-              <p className="text-xs text-muted-foreground">Optional - enter the salary range if available</p>
+              <p className="text-xs text-muted-foreground">
+                Optional - enter the salary range if available
+              </p>
             </div>
 
             {/* Job URL */}
@@ -266,7 +293,9 @@ export default function NewApplication() {
                   {errors.jobUrl.message}
                 </p>
               )}
-              <p className="text-xs text-muted-foreground">Optional - link to the job posting</p>
+              <p className="text-xs text-muted-foreground">
+                Optional - link to the job posting
+              </p>
             </div>
 
             {/* Notes */}
@@ -278,7 +307,9 @@ export default function NewApplication() {
                 {...register("notes")}
                 rows={4}
               />
-              <p className="text-xs text-muted-foreground">Optional - add any important details or reminders</p>
+              <p className="text-xs text-muted-foreground">
+                Optional - add any important details or reminders
+              </p>
             </div>
 
             {/* Resume Selection */}
@@ -287,7 +318,9 @@ export default function NewApplication() {
                 <Label htmlFor="resumeId">Select Resume (Optional)</Label>
                 <Select
                   value={selectedResume || ""}
-                  onValueChange={(value) => setValue("resumeId", value || undefined)}
+                  onValueChange={(value) =>
+                    setValue("resumeId", value || undefined)
+                  }
                 >
                   <SelectTrigger id="resumeId">
                     <SelectValue placeholder="Select a resume (optional)" />
@@ -301,17 +334,15 @@ export default function NewApplication() {
                     ))}
                   </SelectContent>
                 </Select>
-                <p className="text-xs text-muted-foreground">Optional - attach a resume to this application</p>
+                <p className="text-xs text-muted-foreground">
+                  Optional - attach a resume to this application
+                </p>
               </div>
             )}
 
             {/* Form Actions */}
             <div className="flex gap-4 pt-4">
-              <Button
-                type="submit"
-                disabled={isSubmitting}
-                className="flex-1"
-              >
+              <Button type="submit" disabled={isSubmitting} className="flex-1">
                 {isSubmitting ? "Creating..." : "Create Application"}
               </Button>
               <Button

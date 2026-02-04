@@ -6,7 +6,13 @@ import { TrendsChart } from "../components/TrendsChart";
 import { useAuth } from "../hooks/useAuth";
 import { getAnalytics } from "../lib/api";
 import { AnalyticsStats } from "../lib/types";
-import { Loader, TrendingUp, Target, Calendar, CheckCircle } from "lucide-react";
+import {
+  Loader,
+  TrendingUp,
+  Target,
+  Calendar,
+  CheckCircle,
+} from "lucide-react";
 
 export default function Analytics() {
   const { user } = useAuth();
@@ -43,7 +49,9 @@ export default function Analytics() {
   return (
     <Layout>
       <div>
-        <h1 className="text-3xl font-bold text-foreground mb-2">Analytics Dashboard</h1>
+        <h1 className="text-3xl font-bold text-foreground mb-2">
+          Analytics Dashboard
+        </h1>
         <p className="text-muted-foreground mb-8">
           View your job search statistics and trends
         </p>
@@ -84,20 +92,26 @@ export default function Analytics() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           {/* Status Distribution */}
           <div className="rounded-lg border border-border bg-card p-6">
-            <h2 className="text-xl font-semibold text-foreground mb-4">Status Distribution</h2>
+            <h2 className="text-xl font-semibold text-foreground mb-4">
+              Status Distribution
+            </h2>
             <StatusChart data={analytics.byStatus} />
           </div>
 
           {/* Monthly Trends */}
           <div className="rounded-lg border border-border bg-card p-6">
-            <h2 className="text-xl font-semibold text-foreground mb-4">Applications Trends</h2>
+            <h2 className="text-xl font-semibold text-foreground mb-4">
+              Applications Trends
+            </h2>
             <TrendsChart data={analytics.monthlyTrends} />
           </div>
         </div>
 
         {/* Detailed Status Breakdown */}
         <div className="rounded-lg border border-border bg-card p-6">
-          <h2 className="text-xl font-semibold text-foreground mb-4">Status Breakdown</h2>
+          <h2 className="text-xl font-semibold text-foreground mb-4">
+            Status Breakdown
+          </h2>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
             <div className="p-4 rounded-lg bg-blue-50 dark:bg-blue-950">
               <p className="text-sm text-muted-foreground">Applied</p>

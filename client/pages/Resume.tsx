@@ -65,7 +65,7 @@ export default function ResumePage() {
         setIsUploading(false);
       }
     },
-    [user, toast]
+    [user, toast],
   );
 
   const handleDelete = useCallback(
@@ -95,7 +95,7 @@ export default function ResumePage() {
         });
       }
     },
-    [user, toast]
+    [user, toast],
   );
 
   if (isLoading) {
@@ -111,7 +111,9 @@ export default function ResumePage() {
   return (
     <Layout>
       <div>
-        <h1 className="text-3xl font-bold text-foreground mb-2">Resume Management</h1>
+        <h1 className="text-3xl font-bold text-foreground mb-2">
+          Resume Management
+        </h1>
         <p className="text-muted-foreground mb-8">
           Upload and manage your resumes
         </p>
@@ -123,7 +125,8 @@ export default function ResumePage() {
               Upload New Resume
             </h2>
             <p className="text-sm text-muted-foreground mb-6">
-              You can upload multiple versions of your resume. Supported formats: PDF, DOC, DOCX, TXT
+              You can upload multiple versions of your resume. Supported
+              formats: PDF, DOC, DOCX, TXT
             </p>
             <ResumeUpload onUpload={handleUpload} isLoading={isUploading} />
           </div>
@@ -146,9 +149,15 @@ export default function ResumePage() {
               Tips for Resume Management
             </h3>
             <ul className="space-y-2 text-sm text-blue-800 dark:text-blue-200">
-              <li>• Keep multiple versions for different roles (e.g., Senior Role, Junior Role, Internship)</li>
+              <li>
+                • Keep multiple versions for different roles (e.g., Senior Role,
+                Junior Role, Internship)
+              </li>
               <li>• Update your resume regularly with new accomplishments</li>
-              <li>• You can associate different resumes with different job applications</li>
+              <li>
+                • You can associate different resumes with different job
+                applications
+              </li>
               <li>• Download your resumes anytime to send to recruiters</li>
               <li>• Keep file sizes under 5MB for optimal compatibility</li>
             </ul>

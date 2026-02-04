@@ -1,9 +1,9 @@
-import { useState, useEffect, useRef } from 'react';
-import { Input } from '@/components/ui/input';
-import { JobApplication } from '@/lib/types';
-import { Search, X } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { cn } from '@/lib/utils';
+import { useState, useEffect, useRef } from "react";
+import { Input } from "@/components/ui/input";
+import { JobApplication } from "@/lib/types";
+import { Search, X } from "lucide-react";
+import { Link } from "react-router-dom";
+import { cn } from "@/lib/utils";
 
 interface GlobalSearchProps {
   applications: JobApplication[];
@@ -11,7 +11,7 @@ interface GlobalSearchProps {
 }
 
 export function GlobalSearch({ applications, onSearch }: GlobalSearchProps) {
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
   const [results, setResults] = useState<JobApplication[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
@@ -47,8 +47,8 @@ export function GlobalSearch({ applications, onSearch }: GlobalSearchProps) {
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   return (
@@ -68,7 +68,7 @@ export function GlobalSearch({ applications, onSearch }: GlobalSearchProps) {
         {query && (
           <button
             onClick={() => {
-              setQuery('');
+              setQuery("");
               setResults([]);
               setIsOpen(false);
             }}
@@ -89,7 +89,7 @@ export function GlobalSearch({ applications, onSearch }: GlobalSearchProps) {
                   key={app.id}
                   to={`/application/${app.id}`}
                   onClick={() => {
-                    setQuery('');
+                    setQuery("");
                     setIsOpen(false);
                   }}
                   className="block p-3 hover:bg-muted transition-colors"
@@ -103,16 +103,23 @@ export function GlobalSearch({ applications, onSearch }: GlobalSearchProps) {
                         {app.jobRole}
                       </p>
                     </div>
-                    <span className={cn(
-                      'text-xs font-medium px-2 py-1 rounded whitespace-nowrap',
-                      {
-                        'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300': app.status === 'Applied',
-                        'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300': app.status === 'Interview',
-                        'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300': app.status === 'Offer',
-                        'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300': app.status === 'Rejected',
-                        'bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300': app.status === 'OnHold',
-                      }
-                    )}>
+                    <span
+                      className={cn(
+                        "text-xs font-medium px-2 py-1 rounded whitespace-nowrap",
+                        {
+                          "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300":
+                            app.status === "Applied",
+                          "bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300":
+                            app.status === "Interview",
+                          "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300":
+                            app.status === "Offer",
+                          "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300":
+                            app.status === "Rejected",
+                          "bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300":
+                            app.status === "OnHold",
+                        },
+                      )}
+                    >
                       {app.status}
                     </span>
                   </div>

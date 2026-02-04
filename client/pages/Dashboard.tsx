@@ -63,7 +63,9 @@ export default function Dashboard() {
     return (
       <Layout>
         <div className="text-center py-12">
-          <p className="text-muted-foreground">Please log in to view your applications.</p>
+          <p className="text-muted-foreground">
+            Please log in to view your applications.
+          </p>
         </div>
       </Layout>
     );
@@ -80,7 +82,7 @@ export default function Dashboard() {
         (app) =>
           app.company.toLowerCase().includes(term) ||
           app.jobRole.toLowerCase().includes(term) ||
-          app.notes.toLowerCase().includes(term)
+          app.notes.toLowerCase().includes(term),
       );
     }
 
@@ -91,25 +93,25 @@ export default function Dashboard() {
 
     if (filters.company) {
       result = result.filter((app) =>
-        app.company.toLowerCase().includes(filters.company!.toLowerCase())
+        app.company.toLowerCase().includes(filters.company!.toLowerCase()),
       );
     }
 
     if (filters.jobRole) {
       result = result.filter((app) =>
-        app.jobRole.toLowerCase().includes(filters.jobRole!.toLowerCase())
+        app.jobRole.toLowerCase().includes(filters.jobRole!.toLowerCase()),
       );
     }
 
     if (filters.startDate) {
       result = result.filter(
-        (app) => new Date(app.applicationDate) >= new Date(filters.startDate!)
+        (app) => new Date(app.applicationDate) >= new Date(filters.startDate!),
       );
     }
 
     if (filters.endDate) {
       result = result.filter(
-        (app) => new Date(app.applicationDate) <= new Date(filters.endDate!)
+        (app) => new Date(app.applicationDate) <= new Date(filters.endDate!),
       );
     }
 
@@ -132,7 +134,9 @@ export default function Dashboard() {
         // This is a simple check - in production you'd want to parse salary properly
         const salaryNum = parseInt(app.salary.replace(/[^0-9]/g, ""));
         const minSalary = filters.minSalary ? parseInt(filters.minSalary) : 0;
-        const maxSalary = filters.maxSalary ? parseInt(filters.maxSalary) : Infinity;
+        const maxSalary = filters.maxSalary
+          ? parseInt(filters.maxSalary)
+          : Infinity;
         return salaryNum >= minSalary && salaryNum <= maxSalary;
       });
     }
@@ -148,28 +152,28 @@ export default function Dashboard() {
         result.sort(
           (a, b) =>
             new Date(b.applicationDate).getTime() -
-            new Date(a.applicationDate).getTime()
+            new Date(a.applicationDate).getTime(),
         );
         break;
       case "date-asc":
         result.sort(
           (a, b) =>
             new Date(a.applicationDate).getTime() -
-            new Date(b.applicationDate).getTime()
+            new Date(b.applicationDate).getTime(),
         );
         break;
       case "updated-desc":
         result.sort(
           (a, b) =>
             new Date(b.lastUpdated).getTime() -
-            new Date(a.lastUpdated).getTime()
+            new Date(a.lastUpdated).getTime(),
         );
         break;
       case "updated-asc":
         result.sort(
           (a, b) =>
             new Date(a.lastUpdated).getTime() -
-            new Date(b.lastUpdated).getTime()
+            new Date(b.lastUpdated).getTime(),
         );
         break;
     }
@@ -181,13 +185,21 @@ export default function Dashboard() {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedApps = sorted.slice(startIndex, startIndex + itemsPerPage);
 
-  const statusOptions: JobStatus[] = ["Applied", "Interview", "Offer", "Rejected", "OnHold"];
+  const statusOptions: JobStatus[] = [
+    "Applied",
+    "Interview",
+    "Offer",
+    "Rejected",
+    "OnHold",
+  ];
 
   return (
     <Layout>
       <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Job Applications</h1>
+          <h1 className="text-3xl font-bold text-foreground">
+            Job Applications
+          </h1>
           <p className="mt-2 text-muted-foreground">
             Manage and track all your job applications
           </p>
@@ -219,12 +231,18 @@ export default function Dashboard() {
       {/* Sort Options */}
       <div className="mb-6 flex justify-between items-center">
         <p className="text-sm text-muted-foreground">
-          Showing {isLoading ? "..." : Math.min(startIndex + 1, sorted.length)} to{" "}
-          {isLoading ? "..." : Math.min(startIndex + itemsPerPage, sorted.length)} of{" "}
-          {isLoading ? "..." : sorted.length} applications
+          Showing {isLoading ? "..." : Math.min(startIndex + 1, sorted.length)}{" "}
+          to{" "}
+          {isLoading
+            ? "..."
+            : Math.min(startIndex + itemsPerPage, sorted.length)}{" "}
+          of {isLoading ? "..." : sorted.length} applications
         </p>
 
-        <Select value={sortBy} onValueChange={(value) => setSortBy(value as SortBy)}>
+        <Select
+          value={sortBy}
+          onValueChange={(value) => setSortBy(value as SortBy)}
+        >
           <SelectTrigger className="w-auto">
             <SelectValue placeholder="Sort by" />
           </SelectTrigger>
@@ -253,11 +271,18 @@ export default function Dashboard() {
               </TableHeader>
               <TableBody>
                 {paginatedApps.map((app) => (
-                  <TableRow key={app.id} className="hover:bg-secondary/50 transition-colors">
+                  <TableRow
+                    key={app.id}
+                    className="hover:bg-secondary/50 transition-colors"
+                  >
                     <TableCell>
                       <div>
-                        <p className="font-semibold text-foreground">{app.company}</p>
-                        <p className="text-sm text-muted-foreground">{app.jobRole}</p>
+                        <p className="font-semibold text-foreground">
+                          {app.company}
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          {app.jobRole}
+                        </p>
                       </div>
                     </TableCell>
                     <TableCell>

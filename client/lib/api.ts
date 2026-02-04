@@ -1,5 +1,16 @@
-import { JobApplication, Resume, AnalyticsStats, JobStatus, Note, Activity } from "./types";
-import { mockJobApplications, mockResumes, getAnalyticsStats } from "./mockData";
+import {
+  JobApplication,
+  Resume,
+  AnalyticsStats,
+  JobStatus,
+  Note,
+  Activity,
+} from "./types";
+import {
+  mockJobApplications,
+  mockResumes,
+  getAnalyticsStats,
+} from "./mockData";
 
 // Local storage keys
 const APPLICATIONS_STORAGE_KEY = "jobtrack_applications";
@@ -10,7 +21,7 @@ function initializeStorage() {
   if (!localStorage.getItem(APPLICATIONS_STORAGE_KEY)) {
     localStorage.setItem(
       APPLICATIONS_STORAGE_KEY,
-      JSON.stringify(mockJobApplications)
+      JSON.stringify(mockJobApplications),
     );
   }
   if (!localStorage.getItem(RESUMES_STORAGE_KEY)) {
@@ -20,7 +31,7 @@ function initializeStorage() {
 
 // Get all applications for a user
 export async function getJobApplications(
-  userId: string
+  userId: string,
 ): Promise<JobApplication[]> {
   initializeStorage();
   const stored = localStorage.getItem(APPLICATIONS_STORAGE_KEY);
@@ -31,7 +42,9 @@ export async function getJobApplications(
       ...app,
       applicationDate: new Date(app.applicationDate),
       lastUpdated: new Date(app.lastUpdated),
-      interviewDate: app.interviewDate ? new Date(app.interviewDate) : undefined,
+      interviewDate: app.interviewDate
+        ? new Date(app.interviewDate)
+        : undefined,
       statusHistory: app.statusHistory?.map((entry: any) => ({
         ...entry,
         changedAt: new Date(entry.changedAt),
@@ -50,7 +63,7 @@ export async function getJobApplications(
 // Get a single application
 export async function getJobApplication(
   userId: string,
-  applicationId: string
+  applicationId: string,
 ): Promise<JobApplication | null> {
   const apps = await getJobApplications(userId);
   const app = apps.find((a) => a.id === applicationId);
@@ -60,7 +73,7 @@ export async function getJobApplication(
 // Create a new application
 export async function createJobApplication(
   userId: string,
-  data: Omit<JobApplication, "id" | "userId">
+  data: Omit<JobApplication, "id" | "userId">,
 ): Promise<JobApplication> {
   initializeStorage();
   const stored = localStorage.getItem(APPLICATIONS_STORAGE_KEY);
@@ -82,9 +95,9 @@ export async function createJobApplication(
     activities: [
       {
         id: `act-${Date.now()}`,
-        type: 'application_created',
+        type: "application_created",
         timestamp: now,
-        description: 'Application submitted',
+        description: "Application submitted",
       },
     ],
   };
@@ -99,14 +112,14 @@ export async function createJobApplication(
 export async function updateJobApplication(
   userId: string,
   applicationId: string,
-  data: Partial<JobApplication>
+  data: Partial<JobApplication>,
 ): Promise<JobApplication | null> {
   initializeStorage();
   const stored = localStorage.getItem(APPLICATIONS_STORAGE_KEY);
   const applications = stored ? JSON.parse(stored) : mockJobApplications;
 
   const index = applications.findIndex(
-    (app: JobApplication) => app.id === applicationId && app.userId === userId
+    (app: JobApplication) => app.id === applicationId && app.userId === userId,
   );
 
   if (index === -1) return null;
@@ -115,19 +128,21 @@ export async function updateJobApplication(
   const now = new Date();
 
   // Handle status change tracking
-  let statusHistory = oldApplication.statusHistory || [{ status: oldApplication.status, changedAt: oldApplication.applicationDate }];
+  let statusHistory = oldApplication.statusHistory || [
+    {
+      status: oldApplication.status,
+      changedAt: oldApplication.applicationDate,
+    },
+  ];
   let activities = oldApplication.activities || [];
 
   if (data.status && data.status !== oldApplication.status) {
-    statusHistory = [
-      ...statusHistory,
-      { status: data.status, changedAt: now },
-    ];
+    statusHistory = [...statusHistory, { status: data.status, changedAt: now }];
     activities = [
       ...activities,
       {
         id: `act-${Date.now()}`,
-        type: 'status_change' as const,
+        type: "status_change" as const,
         timestamp: now,
         description: `Status changed to ${data.status}`,
         metadata: { from: oldApplication.status, to: data.status },
@@ -141,8 +156,12 @@ export async function updateJobApplication(
     id: applicationId, // Ensure ID doesn't change
     userId, // Ensure userId doesn't change
     lastUpdated: now,
-    applicationDate: new Date(data.applicationDate || oldApplication.applicationDate),
-    interviewDate: data.interviewDate ? new Date(data.interviewDate) : oldApplication.interviewDate,
+    applicationDate: new Date(
+      data.applicationDate || oldApplication.applicationDate,
+    ),
+    interviewDate: data.interviewDate
+      ? new Date(data.interviewDate)
+      : oldApplication.interviewDate,
     statusHistory,
     activities,
   };
@@ -156,14 +175,14 @@ export async function updateJobApplication(
 // Delete an application
 export async function deleteJobApplication(
   userId: string,
-  applicationId: string
+  applicationId: string,
 ): Promise<boolean> {
   initializeStorage();
   const stored = localStorage.getItem(APPLICATIONS_STORAGE_KEY);
   const applications = stored ? JSON.parse(stored) : mockJobApplications;
 
   const index = applications.findIndex(
-    (app: JobApplication) => app.id === applicationId && app.userId === userId
+    (app: JobApplication) => app.id === applicationId && app.userId === userId,
   );
 
   if (index === -1) return false;
@@ -178,7 +197,7 @@ export async function deleteJobApplication(
 export async function updateApplicationStatus(
   userId: string,
   applicationId: string,
-  status: JobStatus
+  status: JobStatus,
 ): Promise<JobApplication | null> {
   return updateJobApplication(userId, applicationId, { status });
 }
@@ -199,7 +218,7 @@ export async function getResumes(userId: string): Promise<Resume[]> {
 // Upload a resume
 export async function uploadResume(
   userId: string,
-  file: File
+  file: File,
 ): Promise<Resume> {
   initializeStorage();
   const stored = localStorage.getItem(RESUMES_STORAGE_KEY);
@@ -231,14 +250,14 @@ export async function uploadResume(
 // Delete a resume
 export async function deleteResume(
   userId: string,
-  resumeId: string
+  resumeId: string,
 ): Promise<boolean> {
   initializeStorage();
   const stored = localStorage.getItem(RESUMES_STORAGE_KEY);
   const resumes = stored ? JSON.parse(stored) : mockResumes;
 
   const index = resumes.findIndex(
-    (resume: Resume) => resume.id === resumeId && resume.userId === userId
+    (resume: Resume) => resume.id === resumeId && resume.userId === userId,
   );
 
   if (index === -1) return false;
@@ -289,20 +308,23 @@ export async function getAnalytics(userId: string): Promise<AnalyticsStats> {
   }).length;
 
   // Calculate success rate (offers/total)
-  const successRate = apps.length > 0 ? Math.round((byStatus.Offer / apps.length) * 100) : 0;
+  const successRate =
+    apps.length > 0 ? Math.round((byStatus.Offer / apps.length) * 100) : 0;
 
   // Calculate average days to first interview
   const appsWithInterviews = apps.filter((a) => a.interviewDate);
-  const avgDaysToInterview = appsWithInterviews.length > 0
-    ? Math.round(
-        appsWithInterviews.reduce((sum, app) => {
-          const daysToInterview = Math.floor(
-            (app.interviewDate!.getTime() - app.applicationDate.getTime()) / (1000 * 60 * 60 * 24)
-          );
-          return sum + daysToInterview;
-        }, 0) / appsWithInterviews.length
-      )
-    : 0;
+  const avgDaysToInterview =
+    appsWithInterviews.length > 0
+      ? Math.round(
+          appsWithInterviews.reduce((sum, app) => {
+            const daysToInterview = Math.floor(
+              (app.interviewDate!.getTime() - app.applicationDate.getTime()) /
+                (1000 * 60 * 60 * 24),
+            );
+            return sum + daysToInterview;
+          }, 0) / appsWithInterviews.length,
+        )
+      : 0;
 
   return {
     totalApplications: apps.length,
@@ -319,14 +341,14 @@ export async function addNoteToApplication(
   userId: string,
   applicationId: string,
   content: string,
-  type: Note['type'] = 'general'
+  type: Note["type"] = "general",
 ): Promise<JobApplication | null> {
   initializeStorage();
   const stored = localStorage.getItem(APPLICATIONS_STORAGE_KEY);
   const applications = stored ? JSON.parse(stored) : mockJobApplications;
 
   const index = applications.findIndex(
-    (app: JobApplication) => app.id === applicationId && app.userId === userId
+    (app: JobApplication) => app.id === applicationId && app.userId === userId,
   );
 
   if (index === -1) return null;
@@ -349,9 +371,9 @@ export async function addNoteToApplication(
       ...activities,
       {
         id: `act-${Date.now()}`,
-        type: 'note_added' as const,
+        type: "note_added" as const,
         timestamp: now,
-        description: `${type === 'interview' ? 'Interview note' : type === 'followup' ? 'Follow-up' : 'Note'} added`,
+        description: `${type === "interview" ? "Interview note" : type === "followup" ? "Follow-up" : "Note"} added`,
       },
     ],
     lastUpdated: now,

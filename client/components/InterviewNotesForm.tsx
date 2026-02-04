@@ -1,9 +1,9 @@
-import { useState, useCallback } from 'react';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { X } from 'lucide-react';
+import { useState, useCallback } from "react";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { X } from "lucide-react";
 
 interface InterviewNotesFormProps {
   onSubmit: (notes: string) => Promise<void>;
@@ -16,43 +16,53 @@ export function InterviewNotesForm({
   onClose,
   isSubmitting = false,
 }: InterviewNotesFormProps) {
-  const [interviewerName, setInterviewerName] = useState('');
-  const [round, setRound] = useState('1');
-  const [questionsAsked, setQuestionsAsked] = useState('');
-  const [yourAnswers, setYourAnswers] = useState('');
-  const [reflection, setReflection] = useState('');
-  const [followUp, setFollowUp] = useState('');
+  const [interviewerName, setInterviewerName] = useState("");
+  const [round, setRound] = useState("1");
+  const [questionsAsked, setQuestionsAsked] = useState("");
+  const [yourAnswers, setYourAnswers] = useState("");
+  const [reflection, setReflection] = useState("");
+  const [followUp, setFollowUp] = useState("");
 
   const handleSubmit = useCallback(async () => {
     const notesContent = `
 INTERVIEW NOTES
 ================
 
-Interviewer: ${interviewerName || 'Not specified'}
+Interviewer: ${interviewerName || "Not specified"}
 Round: ${round}
 
 QUESTIONS ASKED:
-${questionsAsked || 'No notes'}
+${questionsAsked || "No notes"}
 
 YOUR ANSWERS:
-${yourAnswers || 'No notes'}
+${yourAnswers || "No notes"}
 
 REFLECTION:
-${reflection || 'No notes'}
+${reflection || "No notes"}
 
 FOLLOW-UP ITEMS:
-${followUp || 'No items'}
+${followUp || "No items"}
     `.trim();
 
     await onSubmit(notesContent);
-  }, [interviewerName, round, questionsAsked, yourAnswers, reflection, followUp, onSubmit]);
+  }, [
+    interviewerName,
+    round,
+    questionsAsked,
+    yourAnswers,
+    reflection,
+    followUp,
+    onSubmit,
+  ]);
 
   return (
     <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center">
       <div className="bg-background border border-border rounded-lg p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto mx-4">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-foreground">Interview Notes Template</h2>
+          <h2 className="text-2xl font-bold text-foreground">
+            Interview Notes Template
+          </h2>
           <button
             onClick={onClose}
             className="text-muted-foreground hover:text-foreground"
@@ -147,12 +157,9 @@ ${followUp || 'No items'}
               disabled={isSubmitting}
               className="flex-1"
             >
-              {isSubmitting ? 'Saving...' : 'Save Interview Notes'}
+              {isSubmitting ? "Saving..." : "Save Interview Notes"}
             </Button>
-            <Button
-              variant="outline"
-              onClick={onClose}
-            >
+            <Button variant="outline" onClick={onClose}>
               Cancel
             </Button>
           </div>

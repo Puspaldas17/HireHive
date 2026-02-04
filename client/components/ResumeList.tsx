@@ -1,7 +1,7 @@
-import { Resume } from '@/lib/types';
-import { Button } from '@/components/ui/button';
-import { FileText, Download, Trash2, Format } from 'lucide-react';
-import { formatDate } from '@/lib/utils';
+import { Resume } from "@/lib/types";
+import { Button } from "@/components/ui/button";
+import { FileText, Download, Trash2, Format } from "lucide-react";
+import { formatDate } from "@/lib/utils";
 
 interface ResumeListProps {
   resumes: Resume[];
@@ -9,10 +9,14 @@ interface ResumeListProps {
   isLoading?: boolean;
 }
 
-export function ResumeList({ resumes, onDelete, isLoading = false }: ResumeListProps) {
+export function ResumeList({
+  resumes,
+  onDelete,
+  isLoading = false,
+}: ResumeListProps) {
   const handleDownload = (resume: Resume) => {
     if (resume.fileData) {
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = resume.fileData;
       link.download = resume.fileName;
       document.body.appendChild(link);

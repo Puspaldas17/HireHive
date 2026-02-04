@@ -3,7 +3,7 @@
  * Removes dangerous HTML tags and attributes
  */
 export function sanitizeHtml(input: string): string {
-  const div = document.createElement('div');
+  const div = document.createElement("div");
   div.textContent = input;
   return div.innerHTML;
 }
@@ -14,10 +14,10 @@ export function sanitizeHtml(input: string): string {
  */
 export function sanitizeText(input: string): string {
   // Remove null bytes
-  let sanitized = input.replace(/\0/g, '');
+  let sanitized = input.replace(/\0/g, "");
 
   // Remove control characters except newlines and tabs
-  sanitized = sanitized.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '');
+  sanitized = sanitized.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, "");
 
   // Trim whitespace
   sanitized = sanitized.trim();
@@ -32,13 +32,13 @@ export function sanitizeUrl(input: string): string {
   try {
     const url = new URL(input);
     // Only allow http and https protocols
-    if (!['http:', 'https:'].includes(url.protocol)) {
-      return '';
+    if (!["http:", "https:"].includes(url.protocol)) {
+      return "";
     }
     return url.toString();
   } catch {
     // If it's not a valid URL, return empty string
-    return '';
+    return "";
   }
 }
 
@@ -49,7 +49,7 @@ export function sanitizeEmail(input: string): string {
   const sanitized = sanitizeText(input).toLowerCase();
   // Basic email validation regex
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(sanitized) ? sanitized : '';
+  return emailRegex.test(sanitized) ? sanitized : "";
 }
 
 /**
@@ -57,18 +57,18 @@ export function sanitizeEmail(input: string): string {
  */
 export function sanitizeFilename(input: string): string {
   // Remove path separators and null bytes
-  let sanitized = input.replace(/[\/\\:\*\?"<>\|]/g, '_');
-  sanitized = sanitized.replace(/\0/g, '');
+  let sanitized = input.replace(/[\/\\:\*\?"<>\|]/g, "_");
+  sanitized = sanitized.replace(/\0/g, "");
 
   // Remove leading/trailing dots and spaces
-  sanitized = sanitized.replace(/^[\s.]+|[\s.]+$/g, '');
+  sanitized = sanitized.replace(/^[\s.]+|[\s.]+$/g, "");
 
   // Limit length
   if (sanitized.length > 255) {
     sanitized = sanitized.substring(0, 255);
   }
 
-  return sanitized || 'file';
+  return sanitized || "file";
 }
 
 /**
@@ -80,7 +80,7 @@ export function sanitizeJSON(input: string): Record<string, any> | null {
     const parsed = JSON.parse(input);
 
     // Ensure it's an object
-    if (typeof parsed !== 'object' || parsed === null) {
+    if (typeof parsed !== "object" || parsed === null) {
       return null;
     }
 
@@ -95,12 +95,12 @@ export function sanitizeJSON(input: string): Record<string, any> | null {
  */
 export function sanitizeJobApplication(app: Record<string, any>) {
   return {
-    company: sanitizeText(app.company || ''),
-    jobRole: sanitizeText(app.jobRole || ''),
+    company: sanitizeText(app.company || ""),
+    jobRole: sanitizeText(app.jobRole || ""),
     status: app.status, // Already validated by schema
-    notes: sanitizeText(app.notes || ''),
-    salary: sanitizeText(app.salary || ''),
-    jobUrl: sanitizeUrl(app.jobUrl || ''),
+    notes: sanitizeText(app.notes || ""),
+    salary: sanitizeText(app.salary || ""),
+    jobUrl: sanitizeUrl(app.jobUrl || ""),
     applicationDate: app.applicationDate, // Already validated by schema
     lastUpdated: app.lastUpdated, // Already validated by schema
     interviewDate: app.interviewDate, // Already validated by schema
@@ -113,7 +113,7 @@ export function sanitizeJobApplication(app: Record<string, any>) {
  */
 export function sanitizeSearchInput(input: string): string {
   // Remove special characters that could be used in attacks
-  let sanitized = input.replace(/[<>:"/\\|?*]/g, '');
+  let sanitized = input.replace(/[<>:"/\\|?*]/g, "");
   sanitized = sanitizeText(sanitized);
   // Limit length
   return sanitized.substring(0, 100);

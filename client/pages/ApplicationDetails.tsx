@@ -2,9 +2,20 @@ import { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { Layout } from "../components/Layout";
 import { Button } from "../components/ui/button";
-import { ArrowLeft, Edit, Trash2, ExternalLink, Loader, AlertCircle } from "lucide-react";
+import {
+  ArrowLeft,
+  Edit,
+  Trash2,
+  ExternalLink,
+  Loader,
+  AlertCircle,
+} from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
-import { getJobApplication, deleteJobApplication, addNoteToApplication } from "../lib/api";
+import {
+  getJobApplication,
+  deleteJobApplication,
+  addNoteToApplication,
+} from "../lib/api";
 import { useToast } from "../hooks/use-toast";
 import { JobApplication, Note } from "../lib/types";
 import {
@@ -103,7 +114,7 @@ export default function ApplicationDetails() {
   };
 
   const handleAddNote = useCallback(
-    async (content: string, type: Note['type']) => {
+    async (content: string, type: Note["type"]) => {
       if (!user || !id) return;
 
       try {
@@ -123,15 +134,15 @@ export default function ApplicationDetails() {
         });
       }
     },
-    [user, id, toast]
+    [user, id, toast],
   );
 
   const handleAddInterviewNotes = useCallback(
     async (content: string) => {
-      await handleAddNote(content, 'interview');
+      await handleAddNote(content, "interview");
       setShowInterviewForm(false);
     },
-    [handleAddNote]
+    [handleAddNote],
   );
 
   if (isLoading) {
@@ -187,7 +198,9 @@ export default function ApplicationDetails() {
             <h1 className="text-3xl font-bold text-foreground mb-2">
               {application.company}
             </h1>
-            <p className="text-lg text-muted-foreground">{application.jobRole}</p>
+            <p className="text-lg text-muted-foreground">
+              {application.jobRole}
+            </p>
           </div>
           <div className="flex gap-2">
             <Link to={`/edit-application/${id}`}>
@@ -207,7 +220,8 @@ export default function ApplicationDetails() {
                 <AlertDialogHeader>
                   <AlertDialogTitle>Delete Application</AlertDialogTitle>
                   <AlertDialogDescription>
-                    Are you sure you want to delete this application? This action cannot be undone.
+                    Are you sure you want to delete this application? This
+                    action cannot be undone.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <div className="flex gap-3 mt-6">
@@ -244,7 +258,9 @@ export default function ApplicationDetails() {
               </div>
               {application.interviewDate && (
                 <div>
-                  <p className="text-sm text-muted-foreground">Interview Date</p>
+                  <p className="text-sm text-muted-foreground">
+                    Interview Date
+                  </p>
                   <p className="text-foreground font-medium">
                     {formatDate(application.interviewDate)}
                   </p>
@@ -261,12 +277,16 @@ export default function ApplicationDetails() {
 
           {/* Additional Info */}
           <div className="rounded-lg border border-border bg-card p-6">
-            <h2 className="text-lg font-semibold mb-4">Additional Information</h2>
+            <h2 className="text-lg font-semibold mb-4">
+              Additional Information
+            </h2>
             <div className="space-y-4">
               {application.salary && (
                 <div>
                   <p className="text-sm text-muted-foreground">Salary Range</p>
-                  <p className="text-foreground font-medium">{application.salary}</p>
+                  <p className="text-foreground font-medium">
+                    {application.salary}
+                  </p>
                 </div>
               )}
               {application.jobUrl && (
@@ -297,7 +317,9 @@ export default function ApplicationDetails() {
         {application.notes && (
           <div className="rounded-lg border border-border bg-card p-6 mb-8">
             <h2 className="text-lg font-semibold mb-4">Notes</h2>
-            <p className="text-foreground whitespace-pre-wrap">{application.notes}</p>
+            <p className="text-foreground whitespace-pre-wrap">
+              {application.notes}
+            </p>
           </div>
         )}
 
@@ -310,7 +332,9 @@ export default function ApplicationDetails() {
                 <div key={index} className="flex items-center gap-3 text-sm">
                   <div className="w-2 h-2 rounded-full bg-primary" />
                   <div>
-                    <span className="text-foreground font-medium">{entry.status}</span>
+                    <span className="text-foreground font-medium">
+                      {entry.status}
+                    </span>
                     <span className="text-muted-foreground ml-2">
                       ({formatDate(entry.changedAt)})
                     </span>
@@ -325,15 +349,17 @@ export default function ApplicationDetails() {
         <div className="rounded-lg border border-border bg-card p-6 mb-8">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold">Notes</h2>
-            {(application.status === "Interview" || application.status === "Offer") && !showInterviewForm && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowInterviewForm(true)}
-              >
-                Add Interview Notes
-              </Button>
-            )}
+            {(application.status === "Interview" ||
+              application.status === "Offer") &&
+              !showInterviewForm && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowInterviewForm(true)}
+                >
+                  Add Interview Notes
+                </Button>
+              )}
           </div>
           <NotesSection
             notes={application.notesList || []}

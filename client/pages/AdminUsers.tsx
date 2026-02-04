@@ -17,9 +17,9 @@ interface AdminUser {
   id: string;
   email: string;
   name: string;
-  role: 'user' | 'admin';
+  role: "user" | "admin";
   createdAt: string;
-  status: 'active' | 'inactive';
+  status: "active" | "inactive";
   applications: number;
 }
 
@@ -64,16 +64,20 @@ export default function AdminUsers() {
   const handleToggleRole = (userId: string) => {
     setUsers((prev) =>
       prev.map((u) =>
-        u.id === userId ? { ...u, role: u.role === 'admin' ? 'user' : 'admin' } : u
-      )
+        u.id === userId
+          ? { ...u, role: u.role === "admin" ? "user" : "admin" }
+          : u,
+      ),
     );
   };
 
   const handleToggleStatus = (userId: string) => {
     setUsers((prev) =>
       prev.map((u) =>
-        u.id === userId ? { ...u, status: u.status === 'active' ? 'inactive' : 'active' } : u
-      )
+        u.id === userId
+          ? { ...u, status: u.status === "active" ? "inactive" : "active" }
+          : u,
+      ),
     );
   };
 
@@ -89,7 +93,9 @@ export default function AdminUsers() {
       </div>
 
       <div>
-        <h1 className="text-3xl font-bold text-foreground mb-2">User Management</h1>
+        <h1 className="text-3xl font-bold text-foreground mb-2">
+          User Management
+        </h1>
         <p className="text-muted-foreground mb-8">
           Manage system users and their permissions
         </p>
@@ -110,33 +116,44 @@ export default function AdminUsers() {
               </TableHeader>
               <TableBody>
                 {users.map((user) => (
-                  <TableRow key={user.id} className="hover:bg-secondary/50 transition-colors">
+                  <TableRow
+                    key={user.id}
+                    className="hover:bg-secondary/50 transition-colors"
+                  >
                     <TableCell>
                       <div>
-                        <p className="font-semibold text-foreground">{user.name}</p>
-                        <p className="text-sm text-muted-foreground">{user.email}</p>
+                        <p className="font-semibold text-foreground">
+                          {user.name}
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          {user.email}
+                        </p>
                       </div>
                     </TableCell>
                     <TableCell>
                       <Badge
-                        variant={user.role === 'admin' ? 'default' : 'secondary'}
+                        variant={
+                          user.role === "admin" ? "default" : "secondary"
+                        }
                         className="cursor-pointer"
                         onClick={() => handleToggleRole(user.id)}
                         title="Click to toggle role"
                       >
-                        {user.role === 'admin' ? (
+                        {user.role === "admin" ? (
                           <>
                             <Shield className="h-3 w-3 mr-1" />
                             Admin
                           </>
                         ) : (
-                          'User'
+                          "User"
                         )}
                       </Badge>
                     </TableCell>
                     <TableCell>
                       <Badge
-                        variant={user.status === 'active' ? 'default' : 'secondary'}
+                        variant={
+                          user.status === "active" ? "default" : "secondary"
+                        }
                         className="cursor-pointer"
                         onClick={() => handleToggleStatus(user.id)}
                         title="Click to toggle status"
@@ -145,7 +162,9 @@ export default function AdminUsers() {
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      <p className="text-sm text-foreground">{user.applications}</p>
+                      <p className="text-sm text-foreground">
+                        {user.applications}
+                      </p>
                     </TableCell>
                     <TableCell className="text-sm text-muted-foreground">
                       {user.createdAt}
@@ -171,7 +190,9 @@ export default function AdminUsers() {
         {/* Info Box */}
         <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg">
           <p className="text-sm text-blue-800 dark:text-blue-200">
-            <strong>Note:</strong> This is a mock admin interface. In a production app, user management would be handled through a real backend with proper authentication and authorization checks.
+            <strong>Note:</strong> This is a mock admin interface. In a
+            production app, user management would be handled through a real
+            backend with proper authentication and authorization checks.
           </p>
         </div>
       </div>

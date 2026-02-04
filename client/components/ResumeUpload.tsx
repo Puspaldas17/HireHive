@@ -1,6 +1,6 @@
-import { useState, useRef } from 'react';
-import { Button } from '@/components/ui/button';
-import { Upload, FileText, AlertCircle } from 'lucide-react';
+import { useState, useRef } from "react";
+import { Button } from "@/components/ui/button";
+import { Upload, FileText, AlertCircle } from "lucide-react";
 
 interface ResumeUploadProps {
   onUpload: (file: File) => Promise<void>;
@@ -8,37 +8,40 @@ interface ResumeUploadProps {
 }
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-const ALLOWED_TYPES = ['.pdf', '.doc', '.docx', '.txt'];
+const ALLOWED_TYPES = [".pdf", ".doc", ".docx", ".txt"];
 
-export function ResumeUpload({ onUpload, isLoading = false }: ResumeUploadProps) {
+export function ResumeUpload({
+  onUpload,
+  isLoading = false,
+}: ResumeUploadProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
-  const [error, setError] = useState<string>('');
+  const [error, setError] = useState<string>("");
 
   const handleFileSelect = async (file: File) => {
-    setError('');
+    setError("");
 
     // Validate file type
     const fileName = file.name.toLowerCase();
     const isValidType = ALLOWED_TYPES.some((type) => fileName.endsWith(type));
     if (!isValidType) {
-      setError(`Invalid file type. Allowed types: ${ALLOWED_TYPES.join(', ')}`);
+      setError(`Invalid file type. Allowed types: ${ALLOWED_TYPES.join(", ")}`);
       return;
     }
 
     // Validate file size
     if (file.size > MAX_FILE_SIZE) {
-      setError('File size must be less than 5MB');
+      setError("File size must be less than 5MB");
       return;
     }
 
     try {
       await onUpload(file);
       if (fileInputRef.current) {
-        fileInputRef.current.value = '';
+        fileInputRef.current.value = "";
       }
     } catch (err) {
-      setError('Failed to upload resume');
+      setError("Failed to upload resume");
     }
   };
 
@@ -76,8 +79,8 @@ export function ResumeUpload({ onUpload, isLoading = false }: ResumeUploadProps)
         onDrop={handleDrop}
         className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors cursor-pointer ${
           isDragging
-            ? 'border-primary bg-primary/5'
-            : 'border-border bg-muted/50 hover:border-primary/50'
+            ? "border-primary bg-primary/5"
+            : "border-border bg-muted/50 hover:border-primary/50"
         }`}
       >
         <input
