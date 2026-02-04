@@ -1,4 +1,4 @@
-import { JobApplication, Resume, AnalyticsStats, JobStatus } from "./types";
+import { JobApplication, Resume, AnalyticsStats, JobStatus, Note, Activity } from "./types";
 import { mockJobApplications, mockResumes, getAnalyticsStats } from "./mockData";
 
 // Local storage keys
