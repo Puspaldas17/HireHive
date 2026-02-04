@@ -61,10 +61,11 @@ export default function EditApplication() {
   });
 
   const selectedStatus = watch("status");
+  const selectedResume = watch("resumeId");
 
-  // Load application data
+  // Load application data and resumes
   useEffect(() => {
-    const loadApplication = async () => {
+    const loadData = async () => {
       if (!user || !id) {
         toast({
           title: "Error",
@@ -76,7 +77,11 @@ export default function EditApplication() {
       }
 
       try {
-        const app = await getJobApplication(user.id, id);
+        const [app, userResumes] = await Promise.all([
+          getJobApplication(user.id, id),
+          getResumes(user.id),
+        ]);
+
         if (!app) {
           toast({
             title: "Error",
@@ -88,6 +93,7 @@ export default function EditApplication() {
         }
 
         setApplication(app);
+        setResumes(userResumes);
 
         // Pre-populate form
         reset({
@@ -99,6 +105,7 @@ export default function EditApplication() {
           salary: app.salary || "",
           jobUrl: app.jobUrl || "",
           notes: app.notes || "",
+          resumeId: app.resumeId || "",
         });
       } catch (error) {
         toast({
@@ -112,7 +119,7 @@ export default function EditApplication() {
       }
     };
 
-    loadApplication();
+    loadData();
   }, [user, id, navigate, toast, reset]);
 
   const onSubmit = useCallback(
