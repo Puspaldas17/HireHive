@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,9 +17,9 @@ import {
 } from "../components/ui/select";
 import { ArrowLeft, AlertCircle } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
-import { createJobApplication } from "../lib/api";
+import { createJobApplication, getResumes } from "../lib/api";
 import { useToast } from "../hooks/use-toast";
-import { JobStatus } from "../lib/types";
+import { JobStatus, Resume } from "../lib/types";
 
 const jobStatusOptions: JobStatus[] = ["Applied", "Interview", "Offer", "Rejected", "OnHold"];
 
