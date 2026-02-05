@@ -121,7 +121,7 @@ export default function NewApplication() {
           interviewDate: data.interviewDate
             ? new Date(data.interviewDate)
             : undefined,
-          resumeId: data.resumeId || undefined,
+
         });
 
         toast({
