@@ -56,7 +56,13 @@ router.post("/", async (req, res) => {
     const data = applicationSchema.parse(req.body);
     const app = await prisma.jobApplication.create({
       data: {
-        ...data,
+        userId: data.userId,
+        company: data.company,
+        jobRole: data.jobRole,
+        status: data.status,
+        notes: data.notes,
+        salary: data.salary,
+        jobUrl: data.jobUrl,
         applicationDate: new Date(data.applicationDate),
         interviewDate: data.interviewDate ? new Date(data.interviewDate) : null,
       },
