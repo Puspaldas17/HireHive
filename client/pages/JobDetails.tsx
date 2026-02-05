@@ -1,7 +1,109 @@
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { 
+  Building, 
+  MapPin, 
+  Briefcase, 
+  DollarSign, 
+  Clock, 
+  ArrowLeft, 
+  CheckCircle 
+} from "lucide-react";
 import { Header } from "@/components/Header";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { useAuth } from "../hooks/useAuth";
+import { getJob, applyToJob, getJobApplications } from "../lib/api";
+import { JobPost } from "../lib/types";
+import { useToast } from "@/components/ui/use-toast";
 
 export function JobDetails() {
-  // ... existing hooks ...
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const { toast } = useToast();
+
+  const [job, setJob] = useState<JobPost | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isApplying, setIsApplying] = useState(false);
+  const [hasApplied, setHasApplied] = useState(false);
+
+  useEffect(() => {
+    async function loadJob() {
+      if (!id) return;
+      try {
+        const data = await getJob(id);
+        setJob(data);
+
+        if (user) {
+            // Check if already applied
+            // Ideally backend returns this info, or we check our applications list
+            // For now, let's fetch applications and check.
+            try {
+                const apps = await getJobApplications(user.id); // Assuming user object has id
+                const applied = apps.some(app => app.jobPostId === id);
+                setHasApplied(applied);
+            } catch (ignore) {
+                // Ignore error checking applications (maybe not logged in fully or error)
+            }
+        }
+      } catch (error) {
+        toast({
+            title: "Error",
+            description: "Failed to load job details",
+            variant: "destructive",
+        });
+        navigate("/jobs");
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    loadJob();
+  }, [id, navigate, toast, user]);
+
+  const handleApply = async () => {
+    if (!job || !id) return;
+    if (!user) {
+        toast({
+            title: "Authentication required",
+            description: "Please login to apply for jobs",
+        });
+        navigate("/login");
+        return;
+    }
+
+    setIsApplying(true);
+    try {
+        await applyToJob(id);
+        setHasApplied(true);
+        toast({
+            title: "Success",
+            description: "Application submitted successfully!",
+        });
+    } catch (error: any) {
+        toast({
+            title: "Error",
+            description: error.message || "Failed to apply",
+            variant: "destructive",
+        });
+    } finally {
+        setIsApplying(false);
+    }
+  };
+
+  if (isLoading) {
+    return (
+        <div className="min-h-screen bg-background flex flex-col">
+            <Header />
+            <div className="container mx-auto max-w-4xl p-10 flex justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+            </div>
+        </div>
+    );
+  }
+
+  if (!job) return null;
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -17,7 +119,7 @@ export function JobDetails() {
                 <h1 className="text-3xl font-bold text-foreground">{job.title}</h1>
                 <div className="flex items-center text-muted-foreground mt-2 font-medium">
                     <Building className="mr-2 h-4 w-4" />
-                    {job.company?.name} 
+                    {job.company?.name || "Unknown Company"} 
                     {job.company?.location && <span className="mx-2">•</span>}
                     {job.company?.location}
                 </div>
