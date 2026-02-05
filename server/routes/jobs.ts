@@ -43,7 +43,14 @@ router.post("/", authenticateToken, requireRecruiter, async (req: AuthRequest, r
 
     const job = await prisma.jobPost.create({
       data: {
-        ...data,
+        title: data.title,
+        description: data.description,
+        skills: data.skills,
+        salary: data.salary,
+        type: data.type,
+        location: data.location,
+        remote: data.remote,
+        status: data.status,
         companyId: company.id,
       },
     });
@@ -139,7 +146,7 @@ router.get("/:id", async (req, res) => {
 // UPDATE Job
 router.put("/:id", authenticateToken, requireRecruiter, async (req: AuthRequest, res) => {
   try {
-    const { id } = req.params;
+    const { id } = req.params as { id: string };
     const userId = req.user!.userId;
     const data = jobSchema.partial().parse(req.body);
 
@@ -164,7 +171,7 @@ router.put("/:id", authenticateToken, requireRecruiter, async (req: AuthRequest,
 // DELETE Job
 router.delete("/:id", authenticateToken, requireRecruiter, async (req: AuthRequest, res) => {
     try {
-      const { id } = req.params;
+      const { id } = req.params as { id: string };
       const userId = req.user!.userId;
   
       const job = await prisma.jobPost.findUnique({ where: { id }, include: { company: true } });
@@ -186,7 +193,7 @@ router.delete("/:id", authenticateToken, requireRecruiter, async (req: AuthReque
 router.post("/:id/apply", authenticateToken, async (req: AuthRequest, res) => {
   try {
     const userId = req.user!.userId;
-    const jobId = req.params.id;
+    const jobId = req.params.id as string;
 
     // Check if job exists
     const job = await prisma.jobPost.findUnique({ where: { id: jobId }, include: { company: true } });
@@ -245,7 +252,7 @@ router.post("/:id/apply", authenticateToken, async (req: AuthRequest, res) => {
 router.get("/:id/applicants", authenticateToken, async (req: AuthRequest, res) => {
   try {
      const userId = req.user!.userId;
-     const jobId = req.params.id;
+     const jobId = req.params.id as string;
 
      // Verify ownership
      const job = await prisma.jobPost.findUnique({ where: { id: jobId }, include: { company: true }});

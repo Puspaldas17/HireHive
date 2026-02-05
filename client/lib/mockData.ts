@@ -225,5 +225,8 @@ export function getAnalyticsStats(userId: string): AnalyticsStats {
     totalApplications: userApps.length,
     byStatus,
     monthlyTrends,
+    thisMonth: 0,
+    successRate: 0,
+    avgDaysToInterview: 0,
   };
 }

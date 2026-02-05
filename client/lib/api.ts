@@ -136,6 +136,25 @@ export async function searchJobs(params: {
   return handleResponse<JobPost[]>(res);
 }
 
+// Get single job
+export async function getJob(id: string): Promise<JobPost> {
+  const res = await fetch(`/api/jobs/${id}`, {
+    headers: getHeaders(),
+  });
+  return handleResponse<JobPost>(res);
+}
+
+
+
+// Apply to a job
+export async function applyToJob(jobId: string): Promise<JobApplication> {
+  const res = await fetch(`/api/jobs/${jobId}/apply`, {
+    method: "POST",
+    headers: getHeaders(),
+  });
+  return handleResponse<JobApplication>(res);
+}
+
 // Get all resumes for a user
 export async function getResumes(userId: string): Promise<Resume[]> {
   const res = await fetch(`/api/resumes?userId=${userId}`, {
