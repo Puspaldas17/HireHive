@@ -303,12 +303,7 @@ export default function ApplicationDetails() {
                   </a>
                 </div>
               )}
-              {application.resumeId && (
-                <div>
-                  <p className="text-sm text-muted-foreground">Resume</p>
-                  <p className="text-foreground font-medium">Resume attached</p>
-                </div>
-              )}
+
             </div>
           </div>
         </div>

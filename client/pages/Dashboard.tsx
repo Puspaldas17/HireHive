@@ -119,9 +119,7 @@ export default function Dashboard() {
       result = result.filter((app) => app.interviewDate !== undefined);
     }
 
-    if (filters.hasResume) {
-      result = result.filter((app) => app.resumeId !== undefined);
-    }
+
 
     if (filters.hasNotes) {
       result = result.filter((app) => (app.notesList?.length || 0) > 0);

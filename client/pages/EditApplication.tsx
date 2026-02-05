@@ -125,7 +125,7 @@ export default function EditApplication() {
           salary: app.salary || "",
           jobUrl: app.jobUrl || "",
           notes: app.notes || "",
-          resumeId: app.resumeId || "",
+
         });
       } catch (error) {
         toast({
@@ -166,7 +166,7 @@ export default function EditApplication() {
           interviewDate: data.interviewDate
             ? new Date(data.interviewDate)
             : undefined,
-          resumeId: data.resumeId || undefined,
+
         });
 
         toast({
